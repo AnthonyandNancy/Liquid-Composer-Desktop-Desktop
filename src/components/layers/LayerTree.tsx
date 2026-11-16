@@ -27,6 +27,7 @@ import { useLayerDrag, LAYER_INDENT } from './useLayerDrag';
 import { Toggle } from '../ui/Toggle';
 import type { Layer } from '../../types/index';
 import { Plus, ArrowCounterClockwise, FolderSimplePlus, Square } from '@phosphor-icons/react';
+import { t } from '../../i18n';
 
 type ItemRow = { kind: 'item'; layer: Layer; depth: number };
 type EmptyGroupRow = { kind: 'empty-group'; groupId: string };
@@ -56,11 +57,11 @@ function FileUploadZone({ onFiles, compact = false }: { onFiles: (files: File[])
       data-drag-over={over}
       data-compact={compact}
     >
-      <button type="button" onClick={() => inputRef.current?.click()} title="Import SVG, PNG, or JPEG">
+      <button type="button" onClick={() => inputRef.current?.click()} title={t('layers.importTitle')}>
         <Plus size={compact ? 14 : 18} />
         <span>
-          Import Artwork…
-          <span className="layer-import-caption">Drop SVG, PNG, or JPEG</span>
+          {t('layers.importArtwork')}
+          <span className="layer-import-caption">{t('layers.dropHint')}</span>
         </span>
       </button>
       <input
@@ -108,8 +109,8 @@ function SettingsDropdown() {
     <div className="relative" ref={menuRef} onBlur={(e) => { if (e.relatedTarget && !e.currentTarget.contains(e.relatedTarget)) setOpen(false); }}>
       <button
         onClick={() => setOpen((v) => !v)}
-        title="Reset and auto-save"
-        aria-label="Reset and auto-save"
+        title={t('layers.resetAndAutoSave')}
+        aria-label={t('layers.resetAndAutoSave')}
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-controls="save-settings-popover"
@@ -121,12 +122,12 @@ function SettingsDropdown() {
         <div
           id="save-settings-popover"
           role="dialog"
-          aria-label="Reset and auto-save"
+          aria-label={t('layers.resetAndAutoSave')}
           className="editor-popover editor-settings-popover"
         >
           <button
             onClick={() => {
-              if (window.confirm('Reset the document and all saved data? This action cannot be undone.')) {
+              if (window.confirm(t('layers.resetConfirm'))) {
                 setOpen(false);
                 clearPersistence();
               }
@@ -134,15 +135,15 @@ function SettingsDropdown() {
             className="editor-menu-item editor-menu-danger"
           >
             <ArrowCounterClockwise size={14} weight="bold" />
-            Reset Document…
+            {t('layers.resetDocument')}
           </button>
           <div className="mx-2 my-1" style={{ height: '0.5px', background: 'rgba(255,255,255,0.08)' }} />
           <div className="flex items-center justify-between gap-3 px-2 py-[5px]">
             <span className="text-xs text-[#d1d1d6]">
-              Auto-save
-              <span className="block text-2xs text-[#8e8e93]">Keep this icon after reload</span>
+              {t('layers.autoSave')}
+              <span className="block text-2xs text-[#8e8e93]">{t('layers.keepAfterReload')}</span>
             </span>
-            <Toggle ariaLabel="Auto-save" checked={persistenceEnabled} onChange={(v) => $persistenceEnabled.set(v)} />
+            <Toggle ariaLabel={t('layers.autoSave')} checked={persistenceEnabled} onChange={(v) => $persistenceEnabled.set(v)} />
           </div>
         </div>
       )}
@@ -251,22 +252,22 @@ export function LayerTree() {
   return (
     <div className="flex flex-col h-full min-h-0">
       <div className="editor-panel-header">
-        <span className="font-semibold">Layers</span>
+        <span className="font-semibold">{t('layers.title')}</span>
         <div className="flex items-center">
           <SettingsDropdown />
           <ShapeLibrary />
           <button
             onClick={addGroup}
-            title="Add group"
-            aria-label="Add group"
+            title={t('layers.addGroup')}
+            aria-label={t('layers.addGroup')}
             className="editor-icon-button"
           >
             <FolderSimplePlus size={16} />
           </button>
           <button
             onClick={() => addLayer()}
-            title="Add layer"
-            aria-label="Add layer"
+            title={t('layers.addLayer')}
+            aria-label={t('layers.addLayer')}
             className="editor-icon-button"
           >
             <Plus size={16} />
@@ -277,7 +278,7 @@ export function LayerTree() {
       <div
         ref={listRef}
         role="tree"
-        aria-label="Layers"
+        aria-label={t('layers.ariaLabel')}
         className="layer-list"
         data-dragging={!!dragId}
         data-file-drop="layers"
@@ -293,7 +294,7 @@ export function LayerTree() {
             className="layer-empty-group"
             style={{ paddingLeft: 6 + LAYER_INDENT + 22 }}
           >
-            No layers
+            {t('layers.noLayers')}
           </div>
         ) : (
           <LayerItem
@@ -321,7 +322,7 @@ export function LayerTree() {
         className="layer-canvas-button"
       >
         <Square size={18} aria-hidden="true" />
-        Canvas
+        {t('layers.canvas')}
       </button>
     </div>
   );

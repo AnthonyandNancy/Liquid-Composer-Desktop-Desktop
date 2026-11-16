@@ -21,6 +21,7 @@ import type { FillConfig, Layer } from '../../types/index';
 import { CaretRight, Eye, EyeSlash, Stack, Image, Copy, X } from '@phosphor-icons/react';
 import { LayerMenu, type MenuEntry } from './LayerMenu';
 import { LAYER_INDENT } from './useLayerDrag';
+import { t } from '../../i18n';
 
 interface LayerItemProps {
   layer: Layer;
@@ -43,20 +44,20 @@ function menuEntries(layer: Layer, rename: () => void): MenuEntry[] {
   const index = siblings.findIndex((l) => l.id === layer.id);
   const toClipboard = (marker: string | null) => { if (marker) navigator.clipboard?.writeText(marker).catch(() => {}); };
   return [
-    { label: 'Rename', onSelect: rename },
-    { label: layer.visible ? 'Hide' : 'Show', onSelect: () => toggleLayerVisibility(layer.id) },
-    { label: 'Cut', separated: true, onSelect: () => { toClipboard(cutLayer(layer.id)); selectLayer(null); } },
-    { label: 'Copy', onSelect: () => toClipboard(copyLayer(layer.id)) },
-    { label: 'Paste', disabled: !copiedLayerMarker(), onSelect: () => { pasteLayers().catch(console.error); } },
-    { label: 'Duplicate', onSelect: () => { duplicateLayer(layer.id).catch(console.error); } },
-    { label: 'Copy Style', separated: true, onSelect: () => copyLayerStyle(layer.id) },
-    { label: 'Paste Style', onSelect: () => { pasteLayerStyle(layer.id); } },
-    { label: 'Bring to Front', separated: true, disabled: index <= 0, onSelect: () => arrangeLayer(layer.id, 'front') },
-    { label: 'Bring Forward', disabled: index <= 0, onSelect: () => arrangeLayer(layer.id, 'forward') },
-    { label: 'Send Backward', disabled: index >= siblings.length - 1, onSelect: () => arrangeLayer(layer.id, 'backward') },
-    { label: 'Send to Back', disabled: index >= siblings.length - 1, onSelect: () => arrangeLayer(layer.id, 'back') },
-    ...(layer.parentId ? [{ label: 'Select Parent', separated: true, onSelect: () => selectLayer(layer.parentId) }] : []),
-    { label: 'Delete', separated: true, danger: true, onSelect: () => { removeLayer(layer.id); selectLayer(null); } },
+    { label: t('layers.menu.rename'), onSelect: rename },
+    { label: layer.visible ? t('layers.menu.hide') : t('layers.menu.show'), onSelect: () => toggleLayerVisibility(layer.id) },
+    { label: t('layers.menu.cut'), separated: true, onSelect: () => { toClipboard(cutLayer(layer.id)); selectLayer(null); } },
+    { label: t('layers.menu.copy'), onSelect: () => toClipboard(copyLayer(layer.id)) },
+    { label: t('layers.menu.paste'), disabled: !copiedLayerMarker(), onSelect: () => { pasteLayers().catch(console.error); } },
+    { label: t('layers.menu.duplicate'), onSelect: () => { duplicateLayer(layer.id).catch(console.error); } },
+    { label: t('layers.menu.copyStyle'), separated: true, onSelect: () => copyLayerStyle(layer.id) },
+    { label: t('layers.menu.pasteStyle'), onSelect: () => { pasteLayerStyle(layer.id); } },
+    { label: t('layers.menu.bringToFront'), separated: true, disabled: index <= 0, onSelect: () => arrangeLayer(layer.id, 'front') },
+    { label: t('layers.menu.bringForward'), disabled: index <= 0, onSelect: () => arrangeLayer(layer.id, 'forward') },
+    { label: t('layers.menu.sendBackward'), disabled: index >= siblings.length - 1, onSelect: () => arrangeLayer(layer.id, 'backward') },
+    { label: t('layers.menu.sendToBack'), disabled: index >= siblings.length - 1, onSelect: () => arrangeLayer(layer.id, 'back') },
+    ...(layer.parentId ? [{ label: t('layers.menu.selectParent'), separated: true, onSelect: () => selectLayer(layer.parentId) }] : []),
+    { label: t('layers.menu.delete'), separated: true, danger: true, onSelect: () => { removeLayer(layer.id); selectLayer(null); } },
   ];
 }
 
@@ -144,7 +145,7 @@ export function LayerItem({
         <button
           type="button"
           onClick={(e) => { e.stopPropagation(); toggleGroupCollapsed(layer.id); }}
-          aria-label={layer.collapsed ? `Expand ${layer.name}` : `Collapse ${layer.name}`}
+          aria-label={t(layer.collapsed ? 'layers.expand' : 'layers.collapse', { name: layer.name })}
           aria-expanded={!layer.collapsed}
           className="layer-disclosure"
         >
@@ -179,14 +180,14 @@ export function LayerItem({
             e.stopPropagation();
           }}
           onClick={(e) => e.stopPropagation()}
-          aria-label="Layer name"
+          aria-label={t('layers.layerName')}
           className="layer-name-input"
         />
       ) : (
         <span
           className="layer-name"
           onDoubleClick={(e) => { e.stopPropagation(); setEditing(true); }}
-          title="Double-click to rename"
+          title={t('layers.doubleClickRename')}
         >
           {layer.name}
         </span>
@@ -196,8 +197,8 @@ export function LayerItem({
         <button
           type="button"
           onClick={(e) => { e.stopPropagation(); duplicateLayer(layer.id).catch(console.error); }}
-          aria-label={`Duplicate ${layer.name}`}
-          title="Duplicate layer"
+          aria-label={t('layers.duplicateNamed', { name: layer.name })}
+          title={t('layers.duplicateLayer')}
           className="layer-action"
         >
           <Copy size={14} />
@@ -205,8 +206,8 @@ export function LayerItem({
         <button
           type="button"
           onClick={(e) => { e.stopPropagation(); toggleLayerVisibility(layer.id); }}
-          aria-label={layer.visible ? `Hide ${layer.name}` : `Show ${layer.name}`}
-          title={layer.visible ? 'Hide layer' : 'Show layer'}
+          aria-label={t(layer.visible ? 'layers.hideNamed' : 'layers.showNamed', { name: layer.name })}
+          title={t(layer.visible ? 'layers.hideLayer' : 'layers.showLayer')}
           className="layer-action layer-visibility"
         >
           {layer.visible ? <Eye size={15} /> : <EyeSlash size={15} />}
@@ -214,8 +215,8 @@ export function LayerItem({
         <button
           type="button"
           onClick={(e) => { e.stopPropagation(); removeLayer(layer.id); selectLayer(null); }}
-          aria-label={`Remove ${layer.name}`}
-          title="Remove layer"
+          aria-label={t('layers.removeNamed', { name: layer.name })}
+          title={t('layers.removeLayer')}
           className="layer-action layer-remove"
         >
           <X size={14} weight="bold" />
@@ -226,7 +227,7 @@ export function LayerItem({
         <LayerMenu
           x={menu.x}
           y={menu.y}
-          label={`${layer.name} actions`}
+          label={t('layers.actions', { name: layer.name })}
           items={menuEntries(layer, () => setEditing(true))}
           onClose={closeMenu}
         />
