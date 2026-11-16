@@ -1,15 +1,16 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { HexColorPicker } from 'react-colorful';
+import { t, type MessageKey } from '../../i18n';
 import { Popover } from './Popover';
 
-const SYSTEM_COLORS = [
-  { hex: '#FF383C', label: 'Red' }, { hex: '#FF8D28', label: 'Orange' },
-  { hex: '#FFCC00', label: 'Yellow' }, { hex: '#34C759', label: 'Green' },
-  { hex: '#00C8B3', label: 'Mint' }, { hex: '#00C3D0', label: 'Teal' },
-  { hex: '#00C0E8', label: 'Cyan' }, { hex: '#0088FF', label: 'Blue' },
-  { hex: '#6155F5', label: 'Indigo' }, { hex: '#CB30E0', label: 'Purple' },
-  { hex: '#FF2D55', label: 'Pink' }, { hex: '#AC7F5E', label: 'Brown' },
-  { hex: '#8E8E93', label: 'Gray' },
+const SYSTEM_COLORS: { hex: string; label: MessageKey }[] = [
+  { hex: '#FF383C', label: 'background.colors.red' }, { hex: '#FF8D28', label: 'background.colors.orange' },
+  { hex: '#FFCC00', label: 'background.colors.yellow' }, { hex: '#34C759', label: 'background.colors.green' },
+  { hex: '#00C8B3', label: 'background.colors.mint' }, { hex: '#00C3D0', label: 'background.colors.teal' },
+  { hex: '#00C0E8', label: 'background.colors.cyan' }, { hex: '#0088FF', label: 'background.colors.blue' },
+  { hex: '#6155F5', label: 'background.colors.indigo' }, { hex: '#CB30E0', label: 'background.colors.purple' },
+  { hex: '#FF2D55', label: 'background.colors.pink' }, { hex: '#AC7F5E', label: 'background.colors.brown' },
+  { hex: '#8E8E93', label: 'background.colors.gray' },
 ];
 
 const HEX_RE = /^#[0-9a-f]{6}$/i;
@@ -88,7 +89,10 @@ export function ColorPicker({ value, onChange, label, className = 'color-well', 
     if (open) bodyRef.current?.querySelector<HTMLElement>('[tabindex="0"]')?.focus({ preventScroll: true });
   }, [open]);
 
-  const swatches = tab === 'standard' ? SYSTEM_COLORS : recent.map((hex) => ({ hex, label: hex.toUpperCase() }));
+  const swatches =
+    tab === 'standard'
+      ? SYSTEM_COLORS.map((color) => ({ hex: color.hex, label: t(color.label) }))
+      : recent.map((hex) => ({ hex, label: hex.toUpperCase() }));
 
   return (
     <>
@@ -103,24 +107,24 @@ export function ColorPicker({ value, onChange, label, className = 'color-well', 
             <HexColorPicker color={draft} onChange={apply} />
             {eyeDropperAvailable && (
               <button type="button" onClick={pickScreenColor} className="w-full mt-2 rounded-md border border-white/10 px-3 py-2 text-xs text-white/80 hover:text-white hover:bg-white/[0.06]">
-                Pick color from screen
+                {t('colorPicker.pickFromScreen')}
               </button>
             )}
             <label className="color-hex-field">
               <span aria-hidden="true">#</span>
-              <input type="text" aria-label={`${label} hex`} value={hexText} maxLength={7} spellCheck={false} autoComplete="off"
+              <input type="text" aria-label={t('common.hexColor', { label })} value={hexText} maxLength={7} spellCheck={false} autoComplete="off"
                 onChange={(e) => { const text = e.target.value.replace('#', ''); setHexText(text); if (HEX_RE.test(`#${text}`)) apply(`#${text}`); }}
                 onBlur={() => setHexText(draft.slice(1).toUpperCase())}
                 onKeyDown={(e) => { if (e.key === 'Enter') close(true); }} />
             </label>
             <div className="glass-segments color-tabs">
-              <button type="button" aria-pressed={tab === 'standard'} onClick={() => setTab('standard')}>Standard</button>
-              <button type="button" aria-pressed={tab === 'recent'} onClick={() => setTab('recent')}>Recent</button>
+              <button type="button" aria-pressed={tab === 'standard'} onClick={() => setTab('standard')}>{t('colorPicker.standard')}</button>
+              <button type="button" aria-pressed={tab === 'recent'} onClick={() => setTab('recent')}>{t('colorPicker.recent')}</button>
             </div>
-            <div className="color-swatches" role="group" aria-label={tab === 'standard' ? 'System colors' : 'Recent colors'}>
+            <div className="color-swatches" role="group" aria-label={t(tab === 'standard' ? 'colorPicker.systemColors' : 'colorPicker.recentColors')}>
               {swatches.map(({ hex, label: name }) => <button key={hex} type="button" title={name} aria-label={name}
                 aria-pressed={hex.toLowerCase() === draft} onClick={() => apply(hex)} className="color-swatch" style={{ background: hex }} />)}
-              {!swatches.length && <span className="color-swatches-empty">No recent colors</span>}
+              {!swatches.length && <span className="color-swatches-empty">{t('colorPicker.noRecent')}</span>}
             </div>
           </div>
         </Popover>

@@ -1,4 +1,5 @@
 import React, { useCallback, useState, useEffect, useRef, useId } from "react";
+import { t } from "../../i18n";
 
 interface SliderProps {
     value: number;
@@ -127,7 +128,7 @@ export function Slider({
                 }>
                 <input
                     type="number"
-                    aria-label={`${ariaLabel ?? label ?? "Slider"} value`}
+                    aria-label={t('common.value', { label: ariaLabel ?? label ?? t('common.slider') })}
                     min={min}
                     max={max}
                     step={step}

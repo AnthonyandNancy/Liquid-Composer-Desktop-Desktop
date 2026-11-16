@@ -1,4 +1,5 @@
 import React, { useCallback, useRef } from 'react';
+import { t } from '../../i18n';
 
 interface NumberInputProps {
   value: number;
@@ -71,14 +72,14 @@ export function NumberInput({
         <span
           className="text-xs text-[#636366] cursor-ew-resize select-none"
           onMouseDown={handleDragStart}
-          title="Drag to change"
+          title={t('common.dragToChange')}
         >
           {label}
         </span>
       )}
       <div className="inspector-number-field flex items-center bg-white/[0.06] border border-white/[0.08] rounded-md overflow-hidden">
         <input
-          aria-label={ariaLabel ?? label ?? unit}
+          aria-label={ariaLabel ?? label ?? t('common.numberInput')}
           type="number"
           value={value}
           min={min}
@@ -91,7 +92,7 @@ export function NumberInput({
           <span
             className="text-xs text-[#636366] pr-1.5 cursor-ew-resize select-none"
             onMouseDown={handleDragStart}
-            title="Drag to change"
+            title={t('common.dragToChange')}
           >
             {unit}
           </span>
