@@ -13,6 +13,9 @@ import {
     bgColorsFromHueTint,
 } from "../../store/iconStore";
 import { ColorPicker } from "../ui/ColorPicker";
+import { t, type MessageKey } from "../../i18n";
+
+type Stop = { offset: number; color: string };
 
 function hslToHex(h: number, s: number, l: number): string {
     const a = (s / 100) * Math.min(l / 100, 1 - l / 100);
@@ -48,33 +51,33 @@ function hexToHSL(hex: string): { h: number; s: number; l: number } {
     };
 }
 
-const PRESET_COLORS = [
-    { hex: "#FF383C", label: "Red" },
-    { hex: "#FF8D28", label: "Orange" },
-    { hex: "#FFCC00", label: "Yellow" },
-    { hex: "#34C759", label: "Green" },
-    { hex: "#00C8B3", label: "Mint" },
-    { hex: "#00C3D0", label: "Teal" },
-    { hex: "#00C0E8", label: "Cyan" },
-    { hex: "#0088FF", label: "Blue" },
-    { hex: "#6155F5", label: "Indigo" },
-    { hex: "#CB30E0", label: "Purple" },
-    { hex: "#FF2D55", label: "Pink" },
-    { hex: "#AC7F5E", label: "Brown" },
-    { hex: "#F2F2F7", label: "White" },
-    { hex: "#1C1C1E", label: "Near Black" },
+const PRESET_COLORS: { hex: string; labelKey: MessageKey }[] = [
+    { hex: "#FF383C", labelKey: "background.colors.red" },
+    { hex: "#FF8D28", labelKey: "background.colors.orange" },
+    { hex: "#FFCC00", labelKey: "background.colors.yellow" },
+    { hex: "#34C759", labelKey: "background.colors.green" },
+    { hex: "#00C8B3", labelKey: "background.colors.mint" },
+    { hex: "#00C3D0", labelKey: "background.colors.teal" },
+    { hex: "#00C0E8", labelKey: "background.colors.cyan" },
+    { hex: "#0088FF", labelKey: "background.colors.blue" },
+    { hex: "#6155F5", labelKey: "background.colors.indigo" },
+    { hex: "#CB30E0", labelKey: "background.colors.purple" },
+    { hex: "#FF2D55", labelKey: "background.colors.pink" },
+    { hex: "#AC7F5E", labelKey: "background.colors.brown" },
+    { hex: "#F2F2F7", labelKey: "background.colors.white" },
+    { hex: "#1C1C1E", labelKey: "background.colors.nearBlack" },
 ];
 
-const GRADIENT_PRESETS = [
+const GRADIENT_PRESETS: { labelKey: MessageKey; stops: Stop[] }[] = [
     {
-        label: "System Light",
+        labelKey: "background.presetsLabels.systemLight",
         stops: [
             { offset: 0, color: "#FFFFFF" },
             { offset: 1, color: "#F5F5F5" },
         ],
     },
     {
-        label: "System Dark",
+        labelKey: "background.presetsLabels.systemDark",
         stops: [
             { offset: 0, color: "#1F1F1F" },
             { offset: 1, color: "#0F0F0F" },
@@ -82,7 +85,6 @@ const GRADIENT_PRESETS = [
     },
 ];
 
-type Stop = { offset: number; color: string };
 const DEFAULT_STOPS: Stop[] = [
     { offset: 0, color: "#2a2a2e" },
     { offset: 1, color: "#1a1a1e" },
@@ -439,7 +441,7 @@ export function BackgroundControls() {
         <div>
             <div className="px-4 pt-3 flex items-center gap-2">
                 <span className="text-[10px] font-semibold uppercase tracking-widest text-white/35">
-                    Gradient style
+                    {t("background.gradientStyle")}
                 </span>
                 <div className="ml-auto flex rounded-md bg-white/[0.06] p-0.5">
                     {(["linear", "radial"] as const).map(type => (
@@ -449,7 +451,7 @@ export function BackgroundControls() {
                             aria-pressed={gradientType === type}
                             onClick={() => updateGradientType(type)}
                             className={`rounded px-2.5 py-1 text-[10px] font-medium transition-colors ${gradientType === type ? "bg-[#0a84ff] text-white" : "text-white/55 hover:text-white"}`}>
-                            {type === "linear" ? "Linear" : "Radial"}
+                            {t(type === "linear" ? "inspector.gradientTypes.linear" : "inspector.gradientTypes.radial")}
                         </button>
                     ))}
                 </div>
@@ -467,7 +469,7 @@ export function BackgroundControls() {
                             bgValuesRef.current.type = type;
                             scheduleUpdate();
                         }}>
-                        {type === "preset" ? "Solid" : "Gradient"}
+                        {t(type === "preset" ? "background.solid" : "background.gradient")}
                     </button>
                 ))}
             </div>
@@ -475,7 +477,7 @@ export function BackgroundControls() {
             {localBgType === "preset" ? (
                 <div className="p-4 space-y-4">
                     <ColorPicker
-                        label="Background color"
+                        label={t("background.background")}
                         value={hslToHex(hue, sat, l1cur)}
                         onChange={handleCustomColor}
                         className="relative group block w-full rounded-[8px]">
@@ -488,7 +490,7 @@ export function BackgroundControls() {
                             className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-[10px]"
                             style={{ background: "rgba(0,0,0,0.35)" }}>
                             <span className="text-[10px] text-white font-medium">
-                                Custom color
+                                {t("common.customColor")}
                             </span>
                         </span>
                     </ColorPicker>
@@ -496,15 +498,15 @@ export function BackgroundControls() {
                         <span
                             className="text-[10px] font-semibold uppercase tracking-widest mb-2 block"
                             style={{ color: "rgba(255,255,255,0.28)" }}>
-                            Presets
+                            {t("background.presets")}
                         </span>
                         <div className="grid grid-cols-7 gap-1.5 w-full">
-                            {PRESET_COLORS.map(({ hex, label }) => (
+                            {PRESET_COLORS.map(({ hex, labelKey }) => (
                                 <button
                                     type="button"
                                     key={hex}
-                                    title={label}
-                                    aria-label={label}
+                                    title={t(labelKey)}
+                                    aria-label={t(labelKey)}
                                     onClick={() => handleCustomColor(hex)}
                                     className="aspect-square rounded-lg transition-transform hover:scale-110 active:scale-95"
                                     style={{
@@ -520,10 +522,10 @@ export function BackgroundControls() {
                         <span
                             className="text-[10px] font-semibold uppercase tracking-widest mb-2 block"
                             style={{ color: "rgba(255,255,255,0.28)" }}>
-                            Hue
+                            {t("background.hue")}
                         </span>
                         <GradientSlider
-                            label="Hue"
+                            label={t("background.hue")}
                             value={hue}
                             min={0}
                             max={360}
@@ -537,10 +539,10 @@ export function BackgroundControls() {
                         <span
                             className="text-[10px] font-semibold uppercase tracking-widest mb-2 block"
                             style={{ color: "rgba(255,255,255,0.28)" }}>
-                            Tint
+                            {t("background.tint")}
                         </span>
                         <GradientSlider
-                            label="Tint"
+                            label={t("background.tint")}
                             value={tint}
                             min={0}
                             max={100}
@@ -554,10 +556,10 @@ export function BackgroundControls() {
                         <span
                             className="text-[10px] font-semibold uppercase tracking-widest mb-2 block"
                             style={{ color: "rgba(255,255,255,0.28)" }}>
-                            Brightness
+                            {t("background.brightness")}
                         </span>
                         <GradientSlider
-                            label="Brightness"
+                            label={t("background.brightness")}
                             value={brightness}
                             min={0}
                             max={100}
@@ -581,7 +583,7 @@ export function BackgroundControls() {
                                 className="rounded-lg border border-white/[0.07] p-2 space-y-2">
                                 <div className="flex items-center gap-2">
                                     <ColorPicker
-                                        label={`Gradient stop ${i + 1} color`}
+                                        label={t("background.gradientStopColor", { index: i + 1 })}
                                         value={stop.color}
                                         onChange={hex =>
                                             handleStopColor(i, hex)
@@ -589,7 +591,7 @@ export function BackgroundControls() {
                                     />
                                     <input
                                         type="text"
-                                        aria-label={`Gradient stop ${i + 1} hex color`}
+                                        aria-label={t("background.gradientStopHex", { index: i + 1 })}
                                         value={stop.color.toUpperCase()}
                                         onChange={e =>
                                             handleStopColor(i, e.target.value)
@@ -598,8 +600,8 @@ export function BackgroundControls() {
                                     />
                                     <button
                                         type="button"
-                                        aria-label={`Remove gradient stop ${i + 1}`}
-                                        title="Remove stop"
+                                        aria-label={t("background.removeGradientStop", { index: i + 1 })}
+                                        title={t("common.removeStop")}
                                         disabled={localStops.length <= 2}
                                         onClick={() => removeGradientStop(i)}
                                         className="text-white/50 hover:text-white disabled:opacity-20 px-2">
@@ -607,8 +609,8 @@ export function BackgroundControls() {
                                     </button>
                                 </div>
                                 <Slider
-                                    label="Position"
-                                    ariaLabel={`Gradient stop ${i + 1} position`}
+                                    label={t("common.position")}
+                                    ariaLabel={t("background.gradientStopPosition", { index: i + 1 })}
                                     min={0}
                                     max={100}
                                     step={1}
@@ -627,21 +629,21 @@ export function BackgroundControls() {
                         disabled={localStops.length >= MAX_STOPS}
                         onClick={addGradientStop}
                         className="w-full rounded-lg border border-dashed border-white/20 py-2 text-xs font-medium text-white/70 hover:text-white hover:border-white/40 disabled:opacity-30">
-                        + Add gradient stop ({localStops.length}/{MAX_STOPS})
+                        + {t("common.addGradientStop", { count: localStops.length, max: MAX_STOPS })}
                     </button>
                     <div>
                         <span
                             className="text-[10px] font-semibold uppercase tracking-widest mb-2 block"
                             style={{ color: "rgba(255,255,255,0.28)" }}>
-                            Presets
+                            {t("background.presets")}
                         </span>
                         <div className="grid grid-cols-7 gap-1.5 w-full">
-                            {GRADIENT_PRESETS.map(({ label, stops }) => (
+                            {GRADIENT_PRESETS.map(({ labelKey, stops }) => (
                                 <button
                                     type="button"
-                                    key={label}
-                                    title={label}
-                                    aria-label={label}
+                                    key={labelKey}
+                                    title={t(labelKey)}
+                                    aria-label={t(labelKey)}
                                     onClick={() => commitStops(stops)}
                                     className="aspect-square rounded-lg transition-transform hover:scale-110 active:scale-95"
                                     style={{
@@ -656,8 +658,8 @@ export function BackgroundControls() {
                     <div className="border-t border-white/[0.08] pt-3 space-y-2">
                         {gradientType === "linear" && (
                             <Slider
-                                label="Gradient orientation"
-                                ariaLabel="Gradient orientation"
+                                label={t("background.orientation")}
+                                ariaLabel={t("background.orientation")}
                                 min={0}
                                 max={359}
                                 step={1}
@@ -670,11 +672,11 @@ export function BackgroundControls() {
                         <span
                             className="text-[10px] font-semibold uppercase tracking-widest block"
                             style={{ color: "rgba(255,255,255,0.45)" }}>
-                            Directional background light
+                            {t("background.backgroundLight")}
                         </span>
                         <Slider
-                            label="Direction"
-                            ariaLabel="Light direction"
+                            label={t("background.direction")}
+                            ariaLabel={t("background.lightDirection")}
                             min={0}
                             max={359}
                             step={1}
@@ -685,8 +687,8 @@ export function BackgroundControls() {
                         />
 
                         <Slider
-                            label="Intensity"
-                            ariaLabel="Light intensity"
+                            label={t("background.intensity")}
+                            ariaLabel={t("background.lightIntensity")}
                             min={0}
                             max={100}
                             step={1}
