@@ -13,10 +13,12 @@ import {
     Star,
     Triangle,
     UploadSimple,
+    type Icon,
 } from "@phosphor-icons/react";
 import { addLayer } from "../../store/iconStore";
 import { $snapEnabled } from "../../store/uiStore";
 import customSymbolsFontUrl from "../../assets/fonts/Custom-SF-Symbols.ttf?url";
+import { t, type MessageKey } from "../../i18n";
 
 const PAGE_SIZE = 56;
 // Keep printable low codepoints first to match font viewers, then the PUA block;
@@ -29,49 +31,63 @@ const SYMBOL_CODEPOINTS = [
     ),
     ...Array.from({ length: 0x21 }, (_, index) => index),
 ];
-const BUILT_IN_SHAPES = [
+const BUILT_IN_SHAPES: {
+    nameKey: MessageKey;
+    fileName: string;
+    icon: Icon;
+    svg: string;
+}[] = [
     {
-        name: "Rectangle",
+        nameKey: "shapeLibrary.shapes.rectangle",
+        fileName: "rectangle.svg",
         icon: Rectangle,
         svg: '<rect x="192" y="192" width="640" height="640" rx="48"/>',
     },
     {
-        name: "Circle",
+        nameKey: "shapeLibrary.shapes.circle",
+        fileName: "circle.svg",
         icon: Circle,
         svg: '<circle cx="512" cy="512" r="320"/>',
     },
     {
-        name: "Triangle",
+        nameKey: "shapeLibrary.shapes.triangle",
+        fileName: "triangle.svg",
         icon: Triangle,
         svg: '<path d="M512 160 880 832H144z"/>',
     },
     {
-        name: "Square",
+        nameKey: "shapeLibrary.shapes.square",
+        fileName: "square.svg",
         icon: Rectangle,
         svg: '<rect x="192" y="192" width="640" height="640"/>',
     },
     {
-        name: "Diamond",
+        nameKey: "shapeLibrary.shapes.diamond",
+        fileName: "diamond.svg",
         icon: Diamond,
         svg: '<path d="M512 112 912 512 512 912 112 512z"/>',
     },
     {
-        name: "Hexagon",
+        nameKey: "shapeLibrary.shapes.hexagon",
+        fileName: "hexagon.svg",
         icon: Hexagon,
         svg: '<path d="M302 142h420l210 370-210 370H302L92 512z"/>',
     },
     {
-        name: "Star",
+        nameKey: "shapeLibrary.shapes.star",
+        fileName: "star.svg",
         icon: Star,
         svg: '<path d="m512 90 100 290h305L670 560l95 300-253-182-253 182 95-300L107 380h305z"/>',
     },
     {
-        name: "Plus",
+        nameKey: "shapeLibrary.shapes.plus",
+        fileName: "plus.svg",
         icon: Plus,
         svg: '<path d="M432 128h160v304h304v160H592v304H432V592H128V432h304z"/>',
     },
     {
-        name: "Line",
+        nameKey: "shapeLibrary.shapes.line",
+        fileName: "line.svg",
         icon: Minus,
         svg: '<path d="M192 512H832" fill="none" stroke="white" stroke-width="96" stroke-linecap="round"/>',
     },
@@ -87,6 +103,7 @@ export function ShapeLibrary() {
     const urlRef = useRef<string | null>(null);
     const [fontFamily, setFontFamily] = useState<string | null>(null);
     const [fontName, setFontName] = useState<string | null>(null);
+    const [isBundledFont, setIsBundledFont] = useState(false);
     const [fontError, setFontError] = useState("");
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(0);
@@ -138,7 +155,7 @@ export function ShapeLibrary() {
         setFontError("");
     };
 
-    const loadFont = async (file: Blob, label = "Custom symbol font") => {
+    const loadFont = async (file: Blob, label = t("shapeLibrary.customFont")) => {
         let nextUrl: string | null = null;
         setFontError("");
         try {
@@ -148,11 +165,10 @@ export function ShapeLibrary() {
                 `url("${url}")`,
             ).load();
             installFont(face, url, label);
+            setIsBundledFont(false);
         } catch {
             if (nextUrl) URL.revokeObjectURL(nextUrl);
-            setFontError(
-                "Could not load that font. Choose a valid TTF or OTF symbol font.",
-            );
+            setFontError(t("shapeLibrary.fontLoadError"));
         }
     };
 
@@ -165,13 +181,12 @@ export function ShapeLibrary() {
             .load()
             .then(face => {
                 if (cancelled) return;
-                installFont(face, null, "Custom SF Symbols");
+                installFont(face, null, t("shapeLibrary.bundledSymbols"));
+                setIsBundledFont(true);
             })
             .catch(() => {
                 if (!cancelled)
-                    setFontError(
-                        "The bundled custom SF Symbols font could not be loaded.",
-                    );
+                    setFontError(t("shapeLibrary.bundledFontError"));
             });
         return () => {
             cancelled = true;
@@ -207,7 +222,9 @@ export function ShapeLibrary() {
             initial.actualBoundingBoxAscent + initial.actualBoundingBoxDescent;
         if (initialWidth < 1 || initialHeight < 1) {
             setFontError(
-                `This font has no visible glyph at U+${codepoint.toString(16).toUpperCase()}.`,
+                t("shapeLibrary.glyphMissing", {
+                    codepoint: codepoint.toString(16).toUpperCase(),
+                }),
             );
             return;
         }
@@ -243,8 +260,8 @@ export function ShapeLibrary() {
             <button
                 type="button"
                 className="editor-icon-button"
-                title="Basic shapes and snapping"
-                aria-label="Basic shapes and snapping"
+                title={t("shapeLibrary.trigger")}
+                aria-label={t("shapeLibrary.trigger")}
                 aria-haspopup="dialog"
                 aria-expanded={open}
                 onClick={event => {
@@ -277,18 +294,18 @@ export function ShapeLibrary() {
                         className="shape-library-popover"
                         style={{ top: position.top, left: position.left }}
                         role="dialog"
-                        aria-label="Shape library">
+                        aria-label={t("shapeLibrary.dialog")}>
                         <div className="shape-library-heading">
-                            Shape Library
+                            {t("shapeLibrary.heading")}
                         </div>
                         <div
                             className="shape-library-builtins"
                             role="group"
-                            aria-label="Basic shapes">
+                            aria-label={t("shapeLibrary.basicShapes")}>
                             {BUILT_IN_SHAPES.map(
-                                ({ name, icon: Icon, svg }) => (
+                                ({ nameKey, fileName, icon: Icon, svg }) => (
                                     <button
-                                        key={name}
+                                        key={nameKey}
                                         type="button"
                                         onClick={() => {
                                             const image = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><g fill="white">${svg}</g></svg>`;
@@ -298,10 +315,10 @@ export function ShapeLibrary() {
                                                         type: "image/svg+xml",
                                                     }),
                                                 ),
-                                                `${name.toLowerCase()}.svg`,
+                                                fileName,
                                             );
                                         }}>
-                                        <Icon size={18} /> {name}
+                                        <Icon size={18} /> {t(nameKey)}
                                     </button>
                                 ),
                             )}
@@ -311,22 +328,22 @@ export function ShapeLibrary() {
                             className="shape-library-snap"
                             aria-pressed={snapEnabled}
                             onClick={() => $snapEnabled.set(!snapEnabled)}>
-                            <Magnet size={16} /> Snap to center{" "}
-                            <span>{snapEnabled ? "On" : "Off"}</span>
+                            <Magnet size={16} /> {t("shapeLibrary.snapToCenter")}{" "}
+                            <span>{snapEnabled ? t("common.on") : t("common.off")}</span>
                         </button>
                         <div className="shape-library-font">
                             <div className="shape-library-section-title">
-                                {fontName ?? "Custom SF Symbols"}
+                                {fontName ?? t("shapeLibrary.bundledSymbols")}
                             </div>
                             <p>
-                                {fontName === "Custom SF Symbols"
-                                    ? "All 6,404 mapped characters are available. Search by codepoint or browse the glyph pages."
-                                    : "The selected font stays local; selected glyphs become image layers."}
+                                {isBundledFont
+                                    ? t("shapeLibrary.bundledDescription")
+                                    : t("shapeLibrary.customDescription")}
                             </p>
                             <button
                                 type="button"
                                 onClick={() => fileRef.current?.click()}>
-                                <UploadSimple size={16} /> Use another font
+                                <UploadSimple size={16} /> {t("shapeLibrary.useAnotherFont")}
                             </button>
                             <input
                                 ref={fileRef}
@@ -353,8 +370,8 @@ export function ShapeLibrary() {
                                     className="shape-library-search"
                                     type="search"
                                     value={search}
-                                    placeholder="Find by codepoint, e.g. E900"
-                                    aria-label="Search SF Symbols glyphs"
+                                    placeholder={t("shapeLibrary.searchPlaceholder")}
+                                    aria-label={t("shapeLibrary.searchAria")}
                                     onChange={event => {
                                         setSearch(event.target.value);
                                         setPage(0);
@@ -367,13 +384,23 @@ export function ShapeLibrary() {
                                         onClick={() =>
                                             setPage(value => value - 1)
                                         }>
-                                        Previous
+                                        {t("common.previous")}
                                     </button>
                                     <span>
                                         {matchingGlyphs.length
-                                            ? `${page * PAGE_SIZE + 1}–${Math.min((page + 1) * PAGE_SIZE, matchingGlyphs.length)} of ${matchingGlyphs.length}`
-                                            : "No matches"}{" "}
-                                        · {pageCount ? page + 1 : 0}/{pageCount}
+                                            ? t("shapeLibrary.range", {
+                                                  start: page * PAGE_SIZE + 1,
+                                                  end: Math.min(
+                                                      (page + 1) * PAGE_SIZE,
+                                                      matchingGlyphs.length,
+                                                  ),
+                                                  total: matchingGlyphs.length,
+                                              })
+                                            : t("common.noMatches")}{" "}
+                                        · {t("shapeLibrary.page", {
+                                            page: pageCount ? page + 1 : 0,
+                                            total: pageCount,
+                                        })}
                                     </span>
                                     <button
                                         type="button"
@@ -381,19 +408,27 @@ export function ShapeLibrary() {
                                         onClick={() =>
                                             setPage(value => value + 1)
                                         }>
-                                        Next
+                                        {t("common.next")}
                                     </button>
                                 </div>
                                 <div
                                     className="shape-library-grid"
-                                    aria-label="SF Symbols glyphs">
+                                    aria-label={t("shapeLibrary.glyphGrid")}>
                                     {visibleGlyphs.map(codepoint => (
                                         <button
                                             key={codepoint}
                                             type="button"
                                             style={{ fontFamily }}
-                                            title={`Add glyph U+${codepoint.toString(16).toUpperCase()}`}
-                                            aria-label={`Add glyph U+${codepoint.toString(16).toUpperCase()}`}
+                                            title={t("shapeLibrary.addGlyph", {
+                                                codepoint: codepoint
+                                                    .toString(16)
+                                                    .toUpperCase(),
+                                            })}
+                                            aria-label={t("shapeLibrary.addGlyph", {
+                                                codepoint: codepoint
+                                                    .toString(16)
+                                                    .toUpperCase(),
+                                            })}
                                             onClick={() =>
                                                 addFontGlyph(codepoint)
                                             }>
