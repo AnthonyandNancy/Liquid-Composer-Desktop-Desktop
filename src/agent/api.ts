@@ -15,6 +15,7 @@ import {
 } from './recipe';
 import type { BackgroundConfig, Layer, LayerEffects, LiquidGlassConfig } from '../types/index';
 import { t } from '../i18n';
+import { translateImportError } from '../i18n/errors';
 
 type Source = { url: string; ext: string; scale?: number };
 type Entry = { path: (string | number)[]; layer: LayerSpec };
@@ -344,11 +345,15 @@ async function openLink() {
   history.replaceState(null, '', location.pathname + location.search);
   try {
     const recipe = decodeRecipe(encoded);
-    if ($persistenceEnabled.get() && $layers.get().length && !window.confirm('Replace the current icon with the one from this link?')) return;
+    if ($persistenceEnabled.get() && $layers.get().length && !window.confirm(t('importExport.replaceConfirm'))) return;
     await apply(recipe);
   } catch (err) {
     console.error(err);
-    window.alert(`This link does not hold a valid icon. ${err instanceof Error ? err.message : ''}`);
+    window.alert(
+      t('importExport.invalidIconLink', {
+        detail: translateImportError(err instanceof Error ? err.message : String(err)),
+      }),
+    );
   }
 }
 

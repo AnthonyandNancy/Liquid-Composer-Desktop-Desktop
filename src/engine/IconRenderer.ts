@@ -35,6 +35,7 @@ import {
     setWebgl2Status,
     setWebgl2Error,
 } from "../store/uiStore";
+import { t } from "../i18n";
 
 type RGB = { r: number; g: number; b: number };
 type Frame = { x: number; y: number; w: number; h: number };
@@ -340,7 +341,7 @@ const layerScratch: ScratchPool = {
 function reportWebglError(err: unknown) {
     const raw = err instanceof Error ? err.message : String(err);
     const short = raw.split("\n")[0].slice(0, 180);
-    setWebgl2Error(short || "Unknown WebGL2 error");
+    setWebgl2Error(short || t("canvas.unknownError"));
     if (raw && raw !== _lastWebglError) {
         console.error("WebGL2 error:", raw);
         _lastWebglError = raw;

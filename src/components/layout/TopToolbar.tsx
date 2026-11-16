@@ -44,6 +44,7 @@ import {
 } from "../../engine/platforms";
 import type { IconPlatform } from "../../types/index";
 import { t } from "../../i18n";
+import { importErrorMessage } from "../../i18n/errors";
 
 function toDisplayAngle(a: number): number {
     return ((90 - a + 540) % 360) - 180;
@@ -203,7 +204,11 @@ export function TopToolbar() {
             loadDocument(await importIconDocument(file, file.name));
         } catch (err) {
             console.error(err);
-            window.alert(err instanceof Error ? err.message : String(err));
+            window.alert(
+                importErrorMessage(
+                    err instanceof Error ? err.message : String(err),
+                ),
+            );
         }
     };
 
