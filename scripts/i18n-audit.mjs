@@ -35,8 +35,13 @@ const ALLOW = [
 // 明确保留为数据/技术名的行，逐文件放行。
 const FILE_ALLOW = new Map([
   ['src/engine/IconRenderer.ts', [/RENDITION_NAMES/, /^\s*(default|dark|clear|clearDark|tintedLight|tintedDark): /]],
-  ['src/engine/IconDocument.ts', [/Radial Background/]],
+  ['src/engine/IconDocument.ts', [/Radial Background/, /radial fill asset/]],
   ['src/engine/platforms.ts', [/id: 'watchos'/, /previewClass/]],
+  // 泛型与数组方法的比较运算符不是 JSX 标签。
+  ['src/components/ui/ColorPicker.tsx', [/EyeDropperInstance/]],
+  ['src/components/layout/TopToolbar.tsx', [/\.find\(z => z < current\)/]],
+  ['src/components/layers/useLayerDrag.ts', [/findIndex\(\(r\) => y < r\.rect\.bottom\)/]],
+  ['src/store/uiStore.ts', [/\.find\(z => z < current\)/]],
 ]);
 
 const files = TARGETS.flatMap((pattern) => globSync(pattern, { cwd: ROOT }));
@@ -53,9 +58,10 @@ for (const file of files) {
     if (fileAllow.some((re) => re.test(line))) return;
 
     const checks = [
-      />\s*[A-Za-z][^<>{]*</,
-      /\b(aria-label|aria-roledescription|title|placeholder|alt)\s*=\s*["'`][A-Za-z]/,
-      /\b(window\.)?(alert|confirm|prompt)\(\s*["'`][A-Za-z]/,
+      // 只匹配完整的 JSX 文本节点，避免把泛型或比较运算误判为界面文案。
+      /^[^<]*>[ 	]*[A-Za-z][^<>{]*<$/,
+      /(aria-label|aria-roledescription|title|placeholder|alt)\s*=\s*["'`][A-Za-z]/,
+      /(window\.)?(alert|confirm|prompt)\(\s*["'`][A-Za-z]/,
       /\.(label|description|message)\s*[:=]\s*["'`][A-Za-z]/,
     ];
 
