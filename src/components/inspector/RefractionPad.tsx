@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { setHistoryGesture } from '../../store/iconStore';
 import { NumberInput } from '../ui/NumberInput';
+import { t } from '../../i18n';
 
 export type RefractionChange = { strength?: number; height?: number };
 const INSET = 8;
@@ -39,8 +40,8 @@ export function RefractionPad({ strength, height, dimmed, onChange }: {
     onChange(RESET);
   };
   return <div className="space-y-2 pt-1">
-    <div ref={padRef} role="group" aria-roledescription="2D slider" tabIndex={0}
-      aria-label={`Refraction strength ${strength} %, height ${height} %`} title="Drag to set strength and height. Double-click or Home resets."
+    <div ref={padRef} role="group" aria-roledescription={t('glass.twoDSlider')} tabIndex={0}
+      aria-label={t('glass.refractionPadAria', { strength, height })} title={t('glass.refractionPadHint')}
       onPointerDown={e => { if (e.button !== 0) return; e.currentTarget.setPointerCapture(e.pointerId); dragging.current = true; moved.current = false; down.current = [e.clientX, e.clientY]; track(e); }}
       onPointerMove={e => { if (dragging.current) { if (Math.hypot(e.clientX - down.current[0], e.clientY - down.current[1]) > 3) moved.current = true; if (e.buttons & 1) track(e); else { dragging.current = false; setHistoryGesture(false); } } }}
       onPointerUp={() => { cleanClicks.current = moved.current ? 0 : cleanClicks.current + 1; dragging.current = false; setHistoryGesture(false); }} onPointerCancel={() => { dragging.current = false; setHistoryGesture(false); }}
@@ -58,9 +59,9 @@ export function RefractionPad({ strength, height, dimmed, onChange }: {
       <span aria-hidden="true" className="absolute size-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#0a84ff] border-2 border-white/90 shadow-[0_1px_4px_rgba(0,0,0,0.5)] pointer-events-none" style={{ left: along((strength + 100) / 200), top: along(1 - height / 100) }} />
     </div>
     <div className="grid grid-cols-2 gap-x-2 gap-y-1">
-      <span className="text-2xs text-[#a1a1aa]">Strength</span><span className="text-2xs text-[#a1a1aa]">Height</span>
-      <NumberInput ariaLabel="Refraction strength" className="min-w-0" value={strength} onChange={v => onChange({ strength: v })} min={-100} max={100} unit="%" />
-      <NumberInput ariaLabel="Refraction height" className="min-w-0" value={height} onChange={v => onChange({ height: v })} min={0} max={100} unit="%" />
+      <span className="text-2xs text-[#a1a1aa]">{t('glass.strength')}</span><span className="text-2xs text-[#a1a1aa]">{t('glass.height')}</span>
+      <NumberInput ariaLabel={t('glass.refractionStrength')} className="min-w-0" value={strength} onChange={v => onChange({ strength: v })} min={-100} max={100} unit="%" />
+      <NumberInput ariaLabel={t('glass.refractionHeight')} className="min-w-0" value={height} onChange={v => onChange({ height: v })} min={0} max={100} unit="%" />
     </div>
   </div>;
 }
