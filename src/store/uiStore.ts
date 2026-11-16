@@ -1,0 +1,103 @@
+import { atom } from 'nanostores';
+import type { AppearanceMode, IconPlatform } from '../types/index';
+
+export const ZOOM_LEVELS = [25, 50, 75, 100, 150, 200] as const;
+
+export const LIGHT_ANGLE_LEVELS = [90, 45, 0, 315, 270, 225, 180, 135] as const;
+export type LightAngleLevel = typeof LIGHT_ANGLE_LEVELS[number];
+
+export const LIGHT_ANGLE_LABELS: Record<number, string> = {
+   '90': 'Top',
+   '45': 'Top Right',
+    '0': 'Right',
+  '315': 'Bottom Right',
+  '270': 'Bottom',
+  '225': 'Bottom Left',
+  '180': 'Left',
+  '135': 'Top Left',
+};
+
+export const CANVAS_SELECTION_ID = '__canvas__';
+export const $selectedLayerId = atom<string | null>(null);
+export const $hoveredLayerId = atom<string | null>(null);
+export const $appearanceMode = atom<AppearanceMode>('default');
+export const $lightAngle = atom<number>(90);
+export const $zoom = atom<number>(100);
+export const $inspectorTab = atom<'brush' | 'document'>('brush');
+export const $isDragOver = atom<boolean>(false);
+export const $showBackgroundPicker = atom<boolean>(false);
+export const $persistenceEnabled = atom<boolean>(true);
+export const $showAdvancedGlass = atom<boolean>(false);
+export const $showGrid = atom<boolean>(false);
+export const $snapEnabled = atom<boolean>(true);
+export const $gridStyle = atom<'light' | 'dark'>('light');
+export const $iconPlatform = atom<IconPlatform>('ios');
+export const MOBILE_QUERY = '(max-width: 767px)';
+export type MobilePane = 'canvas' | 'layers' | 'inspector';
+export const $mobilePane = atom<MobilePane>('canvas');
+export const $tintHue = atom<number>(280);
+export const $tintSaturation = atom<number>(25);
+export const $tintLightness = atom<number>(65);
+
+export function appearanceTintColor() {
+  return `hsl(${$tintHue.get()}, ${$tintSaturation.get()}%, ${$tintLightness.get()}%)`;
+}
+export type Webgl2Status = 'inactive' | 'active' | 'error';
+export const $webgl2Status = atom<Webgl2Status>('inactive');
+export const $webgl2Error = atom<string>('');
+export const $webgl2Restores = atom<number>(0);
+
+export function selectLayer(id: string | null) {
+  $selectedLayerId.set(id);
+}
+
+export function setMobilePane(pane: MobilePane) {
+  $hoveredLayerId.set(null);
+  $mobilePane.set(pane);
+}
+
+export function inspectLayer(id: string) {
+  selectLayer(id);
+  if (window.matchMedia(MOBILE_QUERY).matches) setMobilePane('inspector');
+}
+
+export function setAppearanceMode(mode: AppearanceMode) {
+  $appearanceMode.set(mode);
+}
+
+export function setLightAngle(angle: number) {
+  $lightAngle.set(angle);
+}
+
+export function setZoom(zoom: number) {
+  $zoom.set(Math.min(200, Math.max(10, zoom)));
+}
+
+export function setIconPlatform(platform: IconPlatform) {
+  $iconPlatform.set(platform);
+}
+
+export function stepZoom(direction: number) {
+  const current = $zoom.get();
+  if (direction > 0) {
+    const next = ZOOM_LEVELS.find((z) => z > current);
+    if (next !== undefined) $zoom.set(next);
+  } else {
+    const prev = [...ZOOM_LEVELS].reverse().find((z) => z < current);
+    if (prev !== undefined) $zoom.set(prev);
+  }
+}
+
+export function setWebgl2Status(status: Webgl2Status) {
+  $webgl2Status.set(status);
+  if (status !== 'error') $webgl2Error.set('');
+}
+
+export function setWebgl2Error(message: string) {
+  $webgl2Error.set(message);
+  $webgl2Status.set('error');
+}
+
+export function setWebgl2Active(active: boolean) {
+  setWebgl2Status(active ? 'active' : 'inactive');
+}
