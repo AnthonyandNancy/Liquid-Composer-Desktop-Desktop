@@ -18,7 +18,7 @@ function createWindow() {
     minWidth: 960,
     minHeight: 600,
     backgroundColor: '#1e1e1e',
-    title: 'Liquid Composer',
+    title: 'Liquid Composer - Liquid Glass 图标设计工具',
     icon: path.join(__dirname, '..', 'public', 'icon-512.png'),
     autoHideMenuBar: true,
     show: false,
@@ -59,15 +59,73 @@ app.on('second-instance', () => {
 });
 
 app.whenReady().then(() => {
-  Menu.setApplicationMenu(
-    Menu.buildFromTemplate([
-      ...(process.platform === 'darwin' ? [{ role: 'appMenu' }] : []),
-      { role: 'fileMenu' },
-      { role: 'editMenu' },
-      { role: 'viewMenu' },
-      { role: 'windowMenu' },
-    ]),
-  );
+  const isMac = process.platform === 'darwin';
+  const template = [
+    ...(isMac
+      ? [{
+          label: 'Liquid Composer',
+          submenu: [
+            { role: 'about', label: '关于 Liquid Composer' },
+            { type: 'separator' },
+            { role: 'services', label: '服务' },
+            { type: 'separator' },
+            { role: 'hide', label: '隐藏 Liquid Composer' },
+            { role: 'hideOthers', label: '隐藏其他' },
+            { role: 'unhide', label: '全部显示' },
+            { type: 'separator' },
+            { role: 'quit', label: '退出 Liquid Composer' },
+          ],
+        }]
+      : []),
+    {
+      label: '文件',
+      submenu: [
+        { role: 'close', label: '关闭窗口' },
+        ...(isMac ? [] : [{ role: 'quit', label: '退出' }]),
+      ],
+    },
+    {
+      label: '编辑',
+      submenu: [
+        { role: 'undo', label: '撤销' },
+        { role: 'redo', label: '重做' },
+        { type: 'separator' },
+        { role: 'cut', label: '剪切' },
+        { role: 'copy', label: '复制' },
+        { role: 'paste', label: '粘贴' },
+        { role: 'selectAll', label: '全选' },
+      ],
+    },
+    {
+      label: '视图',
+      submenu: [
+        { role: 'reload', label: '重新加载' },
+        { role: 'forceReload', label: '强制重新加载' },
+        { role: 'toggleDevTools', label: '开发者工具' },
+        { type: 'separator' },
+        { role: 'resetZoom', label: '实际大小' },
+        { role: 'zoomIn', label: '放大' },
+        { role: 'zoomOut', label: '缩小' },
+        { type: 'separator' },
+        { role: 'togglefullscreen', label: '全屏' },
+      ],
+    },
+    {
+      label: '窗口',
+      submenu: [
+        { role: 'minimize', label: '最小化' },
+        ...(isMac
+          ? [
+              { role: 'zoom', label: '缩放' },
+              { type: 'separator' },
+              { role: 'front', label: '前置全部窗口' },
+            ]
+          : [{ role: 'close', label: '关闭' }]),
+      ],
+    },
+  ];
+
+  Menu.setApplicationMenu(Menu.buildFromTemplate(template));
   createWindow();
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();

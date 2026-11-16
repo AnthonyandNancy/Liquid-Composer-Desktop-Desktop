@@ -1,25 +1,25 @@
 <p align="center">
-  <img src="public/icon-512.png" width="110" alt="Liquid Composer icon" />
+  <img src="public/icon-512.png" width="110" alt="Liquid Composer 图标" />
 </p>
 
 <h1 align="center">Liquid Composer</h1>
 
-<p align="center">Design Liquid Glass app icons in the browser or on your Desktop.</p>
+<p align="center">在浏览器或桌面端设计 Liquid Glass 应用图标。</p>
 
 <p align="center"><a href="https://liquid-composer-new.vercel.app/"><b>liquid-composer-new.vercel.app</b></a></p>
 
-<p align="center"><img alt="Static build passing Badge" src="https://img.shields.io/badge/Build-Passing-brightgreen"> <img alt="Static supported os Badge" src="https://img.shields.io/badge/Supported%20OS-Windows-blue"> <img alt="Static Badge" src="https://img.shields.io/badge/Supported%3B%20No%20release-macOS%2C%20Linux-orange">
- <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white" alt="TypeScript icon"> <img alt="Static wesite Badge" src="https://img.shields.io/badge/Web-Live-green"> </p>
+<p align="center"><img alt="静态构建通过徽章" src="https://img.shields.io/badge/Build-Passing-brightgreen"> <img alt="支持的桌面系统徽章" src="https://img.shields.io/badge/Supported%20OS-Windows-blue"> <img alt="支持状态徽章" src="https://img.shields.io/badge/Supported%3B%20No%20release-macOS%2C%20Linux-orange">
+ <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white" alt="TypeScript 图标"> <img alt="网站状态徽章" src="https://img.shields.io/badge/Web-Live-green"> </p>
 
-<h3 align="center" > Thanks to <a href="https://github.com/frontedu"><b>@Frontedu</b> </a> For original Implementation</h3>
+<h3 align="center" > 感谢 <a href="https://github.com/frontedu"><b>@Frontedu</b> </a> 的原始实现</h3>
 
-## Star History
+## Star 历史
 
 <a href="https://www.star-history.com/?repos=mayibane10%2Fliquid-composer-desktop&type=timeline&releases=&legend=bottom-right">
  <picture>
    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=mayibane10/liquid-composer-desktop&type=timeline&theme=dark&legend=bottom-right" />
    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=mayibane10/liquid-composer-desktop&type=timeline&legend=bottom-right" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=mayibane10/liquid-composer-desktop&type=timeline&legend=bottom-right" />
+   <img alt="Star 历史图表" src="https://api.star-history.com/chart?repos=mayibane10/liquid-composer-desktop&type=timeline&legend=bottom-right" />
  </picture>
 </a>
 
@@ -27,115 +27,115 @@
 
 ---
 
-Liquid Composer is a web app recreation of Apple's Icon Composer that reproduces the Liquid Glass icon material of iOS 27 and Icon Composer 2. Drop in your artwork, stack it in layers, and the engine renders the glass in real time: light from above, highlights and dark edges that define each shape, refraction between layers, background blur, translucency and layer shadows, composited inside the iOS squircle.
+Liquid Composer 是 Apple Icon Composer 的 Web 应用复刻版，重现 iOS 27 与 Icon Composer 2 的 Liquid Glass 图标材质。导入你的素材，将其堆叠成图层，引擎会实时渲染玻璃效果：来自上方的光照、勾勒每个形状的高光与暗边、图层之间的折射、背景模糊、半透明以及图层阴影，最终在 iOS 圆角矩形内完成合成。
 
-Rendering runs on a WebGL2 pipeline. A distance field of each layer's silhouette drives refraction and edge lighting; when Blur is on, two separable Gaussian passes blur everything beneath the layer, and the glass composite shader works in gamma-encoded sRGB, like Icon Composer. Without WebGL2 the app falls back to Canvas 2D: layers keep their shadow, translucency and edge lighting, but lose refraction and blur.
+渲染基于 WebGL2 管线。每个图层轮廓的距离场驱动折射和边缘光照；开启模糊时，两遍可分离高斯模糊会处理该图层下方的所有内容，玻璃合成着色器则在伽马编码的 sRGB 空间中工作，与 Icon Composer 一致。没有 WebGL2 时，应用回退到 Canvas 2D：图层仍保留阴影、半透明与边缘光照，但会失去折射和模糊。
 
-## What's new for iOS/watchOS 27
+## iOS/watchOS 27 新特性
 
-- Light comes straight from above. The toolbar light-angle control remains as a preview tool and is not saved with the document
-- Highlights along the top and bottom edges, and dark edges that define the shape
-- Specular placement: Off, Automatic, Inside or Outside. Automatic picks Inside on bright icon backgrounds and Outside on dark ones and in the Clear appearances
-- Refraction with Strength and Height; a negative Strength bends the image the other way (inverse refraction)
+- 光线从正上方照射。工具栏中的光照角度控件仅用于预览，不会随文档保存
+- 顶部和底部边缘的高光，以及定义形状的暗边
+- 高光位置：关闭、自动、内部或外部。自动模式在明亮图标背景上选择内部，在深色背景和透明外观中选择外部
+- 支持强度和高度可调的折射；强度为负时图像向相反方向弯曲（反向折射）
 
-Highlights, refraction, translucency, blur and shadows follow the formulas and values of Icon Composer 27. The Advanced panel scales the highlights and adds dispersion and frostiness on top.
+高光、折射、半透明、模糊和阴影均遵循 Icon Composer 27 的公式与数值。高级面板可缩放高光，并额外提供色散与磨砂感。
 
-## Features
+## 功能
 
-- Layer-based editing with one level of groups, drag-and-drop reordering, inline rename, duplicate and undo/redo
-- SVG, PNG and JPEG import. SVGs are re-rasterized at render resolution so edges stay crisp
-- Glass controls per layer, or applied to all layers at once: Specular placement, Refraction (Strength, Height), Blur, Translucency and Shadow
-- Advanced panel with Lens (Dispersion), Highlights (Light intensity, Top, Bottom, Edge definition) and Surface (Frostiness), with a reset
-- Per-layer opacity, blend mode, and solid or two-stop gradient fill
-- Default, Dark, Clear Light and Clear Dark appearances and both the light and dark The Tinted variants of iOS 27/watchOS 27
-- Glass-on-glass compositing: each glass layer refracts the background and every layer painted beneath it
-- Background editor driven by hue, tint and brightness, or custom gradient stops
-- Apple icon grid overlay in light or dark lines, center snap guides, alpha-aware layer picking on canvas
-- Export as PNG at 4096, 2048, 1024, 512 or 256 px, or JPEG at 1024; sizes up to 1024 are supersampled. PNG · No Chiclet leaves out the background plate. Copy a 1024 PNG to the clipboard, or download all appearances as a ZIP with `Default/`, `Dark/`, `ClearLight/` and `ClearDark/` folders, each holding PNGs from 4096 to 256 px
-- Icon Composer documents: Export .icon and Open .icon in the export menu, as a zipped `.icon` package that opens in Icon Composer and Xcode. A document with refraction on or specular set to Inside or Outside needs Xcode 27, as Icon Composer 2 writes it; otherwise it also opens in Xcode 26
-- Work is autosaved locally to localStorage and IndexedDB
+- 基于图层的编辑，支持一层分组、拖放排序、行内重命名、复制和撤销/重做
+- 导入 SVG、PNG 和 JPEG。SVG 会按渲染分辨率重新栅格化，边缘保持清晰
+- 每图层或全部图层的玻璃控件：高光位置、折射（强度、高度）、模糊、半透明和阴影
+- 高级面板：镜头（色散）、高光（光照强度、顶部、底部、边缘清晰度）和表面（磨砂感），支持重置
+- 每图层不透明度、混合模式，以及纯色或双色标渐变填充
+- 默认、深色、透明浅色和透明深色外观，以及 iOS 27/watchOS 27 的浅色和深色着色变体
+- 玻璃叠玻璃合成：每个玻璃图层折射背景及其下方所有已绘制图层
+- 背景编辑器支持色相、着色量和亮度，或自定义渐变色标
+- Apple 图标网格叠加（浅色或深色线条）、中心吸附参考线、画布上基于 Alpha 的图层拾取
+- 以 4096、2048、1024、512 或 256 px 导出 PNG，或以 1024 px 导出 JPEG；1024 及以下尺寸会超采样。PNG · 无背景会省略背景板。可复制 1024 PNG 到剪贴板，或将所有外观下载为 ZIP，包含 `Default/`、`Dark/`、`ClearLight/` 和 `ClearDark/` 文件夹，每个文件夹含 4096 到 256 px 的 PNG
+- Icon Composer 文档：在导出菜单中导出 .icon 和打开 .icon，以压缩的 `.icon` 包形式提供，可在 Icon Composer 和 Xcode 中打开。开启折射或将高光设为内部/外部的文档需要 Xcode 27（与 Icon Composer 2 写入格式一致）；否则也可在 Xcode 26 中打开
+- 工作内容自动保存到本地 localStorage 和 IndexedDB
 
-## Shortcuts
+## 快捷键
 
-`⌘` is `Ctrl` on Windows and Linux.
+`⌘` 在 Windows 和 Linux 上对应 `Ctrl`。
 
-- `⌘Z` / `⇧⌘Z` undo and redo
-- `⌘D` duplicate, `Delete` remove, `F2` rename the focused layer
-- `⌘C` / `⌘X` / `⌘V` copy, cut and paste layers (or paste an image)
-- Arrow keys move the selected layer by 1 pt, 10 pt with `⇧`
-- `⌘]` / `⌘[` bring forward or send backward; `⌥⇧⌘F` / `⌥⇧⌘B` bring to front or send to back
-- `⌥⌘C` / `⌥⌘V` copy and paste style: glass, fill, opacity and blend mode
-- `⌥⌘G` toggle the icon grid
+- `⌘Z` / `⇧⌘Z` 撤销和重做
+- `⌘D` 复制，`Delete` 删除，`F2` 重命名当前聚焦图层
+- `⌘C` / `⌘X` / `⌘V` 复制、剪切和粘贴图层（或粘贴图像）
+- 方向键以 1 pt 移动选中图层，按住 `⇧` 为 10 pt
+- `⌘]` / `⌘[` 上移一层或下移一层；`⌥⇧⌘F` / `⌥⇧⌘B` 移到最前或移到最后
+- `⌥⌘C` / `⌥⌘V` 复制和粘贴样式：玻璃、填充、不透明度和混合模式
+- `⌥⌘G` 切换图标网格
 
-## Getting started (Build for Web)
+## 开始使用（Web 构建）
 
-Requires Node 20.19+ or 22.12+.
+需要 Node 20.19+ 或 22.12+。
 
 ```sh
 npm install
 npm run dev      # http://localhost:5173
-npm run build    # production build in dist/
+npm run build    # 生产构建输出到 dist/
 ```
 
-## Desktop Builds (Debug)
+## 桌面构建（调试）
 
 ```sh
 npm install
-npm run desktop # works on any os (debugging only)
+npm run desktop # 可在任意操作系统运行（仅用于调试）
 ```
 
-## Windows Builds (Relese)
+## Windows 构建（发布）
 
 ```sh
-npm install        # if not dons so already
-npm run dist:win   # NSIS installer + portable .exe
-# Output in release/
+npm install        # 如尚未安装
+npm run dist:win   # NSIS 安装包 + 便携版 .exe
+# 输出到 release/
 ```
 
-## Macos Builds (Appinstaller)
+## macOS 构建（安装包）
 
 ```sh
-npm install        # if not dons so already
+npm install        # 如尚未安装
 npm run dist:mac   # .dmg
-# Output in release/
+# 输出到 release/
 ```
 
-# Linux Builds (Relese)
+# Linux 构建（发布）
 
 ```sh
-npm install        # if not dons so already
+npm install        # 如尚未安装
 npm run dist:linux # AppImage + .deb
-# Output in release/
+# 输出到 release/
 ```
 
-## Use with AI agents
+## 与 AI 代理配合使用
 
-Agents drive the same app and engine as the editor. An icon is a JSON recipe: background, layers top to bottom, glass settings and outputs. Applying a recipe replaces the document, and renders come from the WebGL2 engine in headless Chrome.
+代理操作与编辑器相同的应用和引擎。一个图标就是一份 JSON 配方：背景、自上而下的图层、玻璃设置和输出。应用配方会替换当前文档，渲染由无头 Chrome 中的 WebGL2 引擎完成。
 
 ```sh
 npm run build
-npm run -s agent -- apply icon.json --out out/       # PNG, all-appearances zip or .icon, as the recipe asks
+npm run -s agent -- apply icon.json --out out/       # 按配方输出 PNG、所有外观 ZIP 或 .icon
 npm run -s agent -- render icon.json --size 512 --mode dark
 npm run -s agent -- import App.icon --render 512
 npm run -s agent -- validate icon.json
 npm run -s agent -- schema
 ```
 
-Each command prints one JSON object with the written files, the document state and any warnings. Rendering uses your installed Google Chrome through playwright-core, on SwiftShader by default; pass `--gpu` to use the GPU.
+每条命令输出一个 JSON 对象，包含写入的文件、文档状态和所有警告。渲染通过 playwright-core 使用你已安装的 Google Chrome，默认使用 SwiftShader；传入 `--gpu` 可使用 GPU。
 
-- **MCP server, local.** `node scripts/agent/cli.mjs mcp` provides `liquid_apply`, `liquid_update`, `liquid_render`, `liquid_export`, `liquid_import_icon`, `liquid_state` and `liquid_schema`, and returns previews as images. With Claude Code: `claude mcp add liquid-composer -- node /path/to/liquid-composer/scripts/agent/cli.mjs mcp`
-- **MCP server, remote.** `https://liquid-composer.vercel.app/mcp` checks recipes and returns a link that opens the icon in your browser. The recipe travels in the URL fragment, so it never reaches the server. This server does not render
-- **Skill.** `npx skills add frontedu/liquid-composer` teaches agents the recipe format and the workflow
-- **In the browser.** Every build exposes `window.liquidComposer` (`apply`, `update`, `render`, `export`, `state`, `schema`). Add `?agent` to the URL to turn autosave off
+- **本地 MCP 服务器。** `node scripts/agent/cli.mjs mcp` 提供 `liquid_apply`、`liquid_update`、`liquid_render`、`liquid_export`、`liquid_import_icon`、`liquid_state` 和 `liquid_schema`，并将预览作为图像返回。配合 Claude Code 使用：`claude mcp add liquid-composer -- node /path/to/liquid-composer/scripts/agent/cli.mjs mcp`
+- **远程 MCP 服务器。** `https://liquid-composer.vercel.app/mcp` 会校验配方并返回一个在浏览器中打开图标的链接。配方通过 URL 片段传输，因此不会到达服务器。该服务器不执行渲染
+- **技能。** `npx skills add frontedu/liquid-composer` 会教会代理配方格式和工作流程
+- **在浏览器中。** 所有构建都会暴露 `window.liquidComposer`（`apply`、`update`、`render`、`export`、`state`、`schema`）。在 URL 后添加 `?agent` 可关闭自动保存
 
-## How it works
+## 工作原理
 
-The editor is Vite, React 19, Tailwind and Nanostores. The engine lives in `src/engine/`:
+编辑器使用 Vite、React 19、Tailwind 和 Nanostores。引擎位于 `src/engine/`：
 
-- `IconRenderer.ts` orchestrates compositing. It rasterizes each layer, draws its shadow, resolves the specular placement and hands each glass layer everything already painted below it
-- `LiquidGlass.ts` is the WebGL2 renderer: a jump-flood distance field of the layer's silhouette, ping-pong framebuffers for the blur (RGBA16F when supported, skipped when Blur is off), then the glass composite pass
-- `shaders/` holds the GLSL ES 3.00 sources. The composite pass computes refraction, dispersion, translucency and the edge highlights and dark edges
-- `glassContract.ts` holds the material constants: highlight table, refraction and blur limits, layer shadow
-- `IconDocument.ts` reads and writes Icon Composer `.icon` documents
+- `IconRenderer.ts` 负责编排合成。它栅格化每个图层、绘制其阴影、解析高光位置，并将下方所有已绘制内容交给每个玻璃图层
+- `LiquidGlass.ts` 是 WebGL2 渲染器：为图层轮廓构建跳跃洪泛距离场，用乒乓帧缓冲完成模糊（支持时使用 RGBA16F，关闭模糊时跳过），然后执行玻璃合成通道
+- `shaders/` 存放 GLSL ES 3.00 源码。合成通道计算折射、色散、半透明、边缘高光与暗边
+- `glassContract.ts` 存放材质常量：高光表、折射与模糊限制、图层阴影
+- `IconDocument.ts` 读写 Icon Composer `.icon` 文档
 
-The agent API lives in `src/agent/`, the CLI and local MCP server in `scripts/agent/`, and the remote MCP endpoint in `api/mcp.ts`.
+代理 API 位于 `src/agent/`，CLI 与本地 MCP 服务器位于 `scripts/agent/`，远程 MCP 端点位于 `api/mcp.ts`。

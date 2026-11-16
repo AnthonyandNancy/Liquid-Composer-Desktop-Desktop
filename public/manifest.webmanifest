@@ -2,10 +2,11 @@
   "id": "/",
   "name": "Liquid Composer",
   "short_name": "Liquid Composer",
-  "description": "Design Liquid Glass app icons in the browser.",
+  "description": "在浏览器中设计 Liquid Glass 应用图标。",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
+  "lang": "zh-CN",
   "background_color": "#171719",
   "theme_color": "#171719",
   "icons": [
