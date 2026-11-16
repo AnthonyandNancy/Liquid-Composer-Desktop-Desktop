@@ -12,22 +12,10 @@ import { BackgroundControls } from "./BackgroundControls";
 import { Slider } from "../ui/Slider";
 import { Select } from "../ui/Select";
 import type { BlendMode } from "../../types/index";
+import { t } from "../../i18n";
+import { BLEND_MODE_OPTIONS } from "./options";
 
-const BLEND_MODES: { value: BlendMode; label: string }[] = [
-    { value: "normal", label: "Normal" },
-    { value: "multiply", label: "Multiply" },
-    { value: "screen", label: "Screen" },
-    { value: "overlay", label: "Overlay" },
-    { value: "darken", label: "Darken" },
-    { value: "lighten", label: "Lighten" },
-    { value: "color-dodge", label: "Color Dodge" },
-    { value: "color-burn", label: "Color Burn" },
-    { value: "hard-light", label: "Hard Light" },
-    { value: "soft-light", label: "Soft Light" },
-    { value: "difference", label: "Difference" },
-    { value: "exclusion", label: "Exclusion" },
-    { value: "plus-lighter", label: "Plus Lighter" },
-];
+const BLEND_MODES = BLEND_MODE_OPTIONS.map(({ value, labelKey }) => ({ value, label: t(labelKey) }));
 
 function GroupColorSection() {
     const selectedId = useStore($selectedLayerId);
@@ -41,17 +29,17 @@ function GroupColorSection() {
         <div className="border-b border-white/[0.07] pb-5">
             <div className="flex items-center justify-between px-3 py-3">
                 <span className="text-xs font-semibold text-[#ebebf5]">
-                    Group
+                    {t('inspector.group')}
                 </span>
                 <span className="text-2xs text-[#636366] bg-white/[0.07] px-1.5 py-0.5 rounded">
-                    {childCount} {childCount === 1 ? "layer" : "layers"}
+                    {t('inspector.layerCount', { count: childCount })}
                 </span>
             </div>
 
             <div className="px-3 space-y-3">
                 <Slider
                     layout="stacked"
-                    label="Opacity"
+                    label={t("common.opacity")}
                     value={layer.opacity}
                     onChange={v => updateLayer(layer.id, { opacity: v })}
                     min={0}
@@ -60,10 +48,10 @@ function GroupColorSection() {
 
                 <div className="flex items-center gap-2">
                     <span className="text-xs text-[#636366] w-16 shrink-0">
-                        Blend
+                        {t("inspector.blend")}
                     </span>
                     <Select
-                        ariaLabel="Group blend mode"
+                        ariaLabel={t("inspector.groupBlendMode")}
                         value={layer.blendMode}
                         onChange={v =>
                             updateLayer(layer.id, { blendMode: v as BlendMode })
@@ -86,24 +74,22 @@ export function InspectorPanel() {
 
     return (
         <aside
-            aria-label="Inspector"
+            aria-label={t("inspector.title")}
             className="inspector-panel w-[280px] shrink-0 min-h-0 flex flex-col">
             <div className="editor-panel-header">
                 <span className="font-semibold truncate" title={layer?.name}>
-                    {isCanvas ? "Canvas" : layer ? layer.name : "Inspector"}
+                    {isCanvas ? t("inspector.canvas") : layer ? layer.name : t("inspector.title")}
                 </span>
             </div>
 
             {isCanvas ? (
                 <div className="flex-1 min-h-0 overflow-y-auto">
                     <div className="px-3 py-3 text-xs font-semibold text-[#ebebf5]">
-                        Color
+                        {t("inspector.color")}
                     </div>
                     {appearanceMode !== "default" && (
                         <p className="px-3 pb-3 glass-setting-caption">
-                            Colors apply to Default appearance. Dark, Mono,
-                            Clear, and Tinted modes use appearance-specific
-                            backgrounds and treatments.
+                            {t("inspector.appearanceNote")}
                         </p>
                     )}
                     <BackgroundControls />
@@ -111,7 +97,7 @@ export function InspectorPanel() {
             ) : !layer ? (
                 <div className="flex-1 flex items-center justify-center p-4">
                     <p className="text-xs text-[#a1a1aa] text-center max-w-44 leading-relaxed">
-                        Select a layer to inspect its properties
+                        {t("inspector.selectLayer")}
                     </p>
                 </div>
             ) : (

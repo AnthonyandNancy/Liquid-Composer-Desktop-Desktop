@@ -6,6 +6,8 @@ import { Slider } from "../ui/Slider";
 import { Select } from "../ui/Select";
 import { ColorPicker } from "../ui/ColorPicker";
 import type { BlendMode, FillConfig } from "../../types/index";
+import { t } from "../../i18n";
+import { BLEND_MODE_OPTIONS, FILL_TYPE_OPTIONS, GRADIENT_TYPE_OPTIONS } from "./options";
 
 function useDebounce<T>(value: T, delay: number): T {
     const [debouncedValue, setDebouncedValue] = useState<T>(value);
@@ -18,27 +20,9 @@ function useDebounce<T>(value: T, delay: number): T {
     return debouncedValue;
 }
 
-const BLEND_MODES: { value: BlendMode; label: string }[] = [
-    { value: "normal", label: "Normal" },
-    { value: "multiply", label: "Multiply" },
-    { value: "screen", label: "Screen" },
-    { value: "overlay", label: "Overlay" },
-    { value: "darken", label: "Darken" },
-    { value: "lighten", label: "Lighten" },
-    { value: "color-dodge", label: "Color Dodge" },
-    { value: "color-burn", label: "Color Burn" },
-    { value: "hard-light", label: "Hard Light" },
-    { value: "soft-light", label: "Soft Light" },
-    { value: "difference", label: "Difference" },
-    { value: "exclusion", label: "Exclusion" },
-    { value: "plus-lighter", label: "Plus Lighter" },
-];
-
-const FILL_TYPES = [
-    { value: "none", label: "None" },
-    { value: "solid", label: "Solid" },
-    { value: "gradient", label: "Gradient" },
-];
+const BLEND_MODES = BLEND_MODE_OPTIONS.map(({ value, labelKey }) => ({ value, label: t(labelKey) }));
+const FILL_TYPES = FILL_TYPE_OPTIONS.map(({ value, labelKey }) => ({ value, label: t(labelKey) }));
+const GRADIENT_TYPES = GRADIENT_TYPE_OPTIONS.map(({ value, labelKey }) => ({ value, label: t(labelKey) }));
 
 const HEX_RE = /^#[0-9a-f]{6}$/i;
 
@@ -128,17 +112,17 @@ export function ColorSection() {
         <div className="border-b border-white/[0.07] pb-5">
             <div className="flex items-center justify-between px-3 py-3">
                 <span className="text-xs font-semibold text-[#ebebf5]">
-                    Color
+                    {t("inspector.color")}
                 </span>
                 <span className="text-2xs text-[#636366] bg-white/[0.07] px-1.5 py-0.5 rounded">
-                    All
+                    {t("common.all")}
                 </span>
             </div>
 
             <div className="px-3 space-y-3">
                 <Slider
                     layout="stacked"
-                    label="Opacity"
+                    label={t("common.opacity")}
                     value={layer.opacity}
                     onChange={v => updateLayer(layer.id, { opacity: v })}
                     min={0}
@@ -147,10 +131,10 @@ export function ColorSection() {
 
                 <div className="flex items-center gap-2">
                     <span className="text-xs text-[#636366] w-16 shrink-0">
-                        Blend
+                        {t("inspector.blend")}
                     </span>
                     <Select
-                        ariaLabel="Layer blend mode"
+                        ariaLabel={t("inspector.layerBlendMode")}
                         value={layer.blendMode}
                         onChange={v =>
                             updateLayer(layer.id, { blendMode: v as BlendMode })
@@ -163,10 +147,10 @@ export function ColorSection() {
                 <div className="space-y-2">
                     <div className="flex items-center gap-2">
                         <span className="text-xs text-[#636366] w-16 shrink-0">
-                            Fill
+                            {t("common.fill")}
                         </span>
                         <Select
-                            ariaLabel="Fill type"
+                            ariaLabel={t("inspector.fillType")}
                             value={fill.type}
                             onChange={v => {
                                 if (v === "none")
@@ -199,17 +183,17 @@ export function ColorSection() {
                     {fill.type === "solid" && (
                         <div className="flex items-center gap-2 min-w-0">
                             <span className="text-xs text-[#636366] w-16 shrink-0">
-                                Color
+                                {t("inspector.color")}
                             </span>
                             <div className="flex items-center gap-2 min-w-0 flex-1">
                                 <ColorPicker
-                                    label="Fill color"
+                                    label={t("inspector.fillColor")}
                                     value={localSolidColor}
                                     onChange={setLocalSolidColor}
                                 />
                                 <input
                                     type="text"
-                                    aria-label="Fill hex color"
+                                    aria-label={t("inspector.fillHex")}
                                     value={localSolidColor}
                                     onChange={e =>
                                         setLocalSolidColor(e.target.value)
@@ -224,10 +208,10 @@ export function ColorSection() {
                         <div className="space-y-1.5">
                             <div className="flex items-center gap-2">
                                 <span className="text-xs text-[#636366] w-16 shrink-0">
-                                    Style
+                                    {t("common.style")}
                                 </span>
                                 <Select
-                                    ariaLabel="Gradient style"
+                                    ariaLabel={t("inspector.gradientStyle")}
                                     value={fill.gradientType ?? "linear"}
                                     onChange={v =>
                                         updateLayerFill(layer.id, {
@@ -237,10 +221,7 @@ export function ColorSection() {
                                                 | "radial",
                                         })
                                     }
-                                    options={[
-                                        { value: "linear", label: "Linear" },
-                                        { value: "radial", label: "Radial" },
-                                    ]}
+                                    options={GRADIENT_TYPES}
                                     className="flex-1"
                                 />
                             </div>
@@ -263,7 +244,7 @@ export function ColorSection() {
                                         key={i}
                                         className="flex items-center gap-2 min-w-0">
                                         <ColorPicker
-                                            label={`Gradient color ${i + 1}`}
+                                            label={t("inspector.gradientColor", { index: i + 1 })}
                                             value={stop.color}
                                             onChange={hex => {
                                                 const newStops = [
@@ -278,7 +259,7 @@ export function ColorSection() {
                                         />
                                         <input
                                             type="text"
-                                            aria-label={`Gradient hex color ${i + 1}`}
+                                            aria-label={t("inspector.gradientHexColor", { index: i + 1 })}
                                             value={stop.color}
                                             onChange={e => {
                                                 const newStops = [

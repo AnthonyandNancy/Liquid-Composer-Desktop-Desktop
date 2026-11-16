@@ -2,10 +2,11 @@ import { useEffect, useState, useId } from "react";
 import { useStore } from "@nanostores/react";
 import { $layers, updateLayer } from "../../store/iconStore";
 import { $selectedLayerId, $iconPlatform } from "../../store/uiStore";
-import { platformLayout, platformProfile } from "../../engine/platforms";
+import { platformLayout, platformShortLabelKey } from "../../engine/platforms";
 import { NumberInput } from "../ui/NumberInput";
 import { Toggle } from "../ui/Toggle";
 import { Slider } from "../ui/Slider";
+import { t } from "../../i18n";
 
 export function CompositionSection() {
     const nameId = useId();
@@ -36,18 +37,18 @@ export function CompositionSection() {
         <div className="border-b border-white/[0.07] pb-5">
             <div className="flex items-center justify-between px-3 py-3">
                 <span className="text-xs font-semibold text-[#ebebf5]">
-                    Composition
+                    {t("inspector.composition")}
                 </span>
                 <span className="text-2xs text-[#636366] bg-white/[0.07] px-1.5 py-0.5 rounded">
-                    {platformProfile(platform).shortLabel}
+                    {t(platformShortLabelKey(platform))}
                 </span>
             </div>
 
             <div className="px-3 space-y-3">
                 <div className="flex items-center justify-between">
-                    <span className="text-xs text-[#636366]">Visible</span>
+                    <span className="text-xs text-[#636366]">{t("inspector.visible")}</span>
                     <Toggle
-                        ariaLabel="Layer visibility"
+                        ariaLabel={t("inspector.layerVisibility")}
                         checked={visible}
                         onChange={v => updateLayer(layer.id, { visible: v })}
                     />
@@ -55,7 +56,7 @@ export function CompositionSection() {
 
                 <div className="space-y-2">
                     <label htmlFor={nameId} className="text-xs text-[#a1a1aa]">
-                        Name
+                        {t("inspector.name")}
                     </label>
                     <input
                         id={nameId}
@@ -77,11 +78,11 @@ export function CompositionSection() {
                     <>
                         <div className="space-y-2">
                             <span className="text-xs text-[#a1a1aa]">
-                                Position
+                                {t("inspector.position")}
                             </span>
                             <div className="grid grid-cols-2 gap-2">
                                 <NumberInput
-                                    ariaLabel="Position X"
+                                    ariaLabel={t("inspector.positionX")}
                                     className="min-w-0"
                                     value={Math.round(layout.x * 10) / 10}
                                     onChange={v =>
@@ -95,7 +96,7 @@ export function CompositionSection() {
                                     unit="X"
                                 />
                                 <NumberInput
-                                    ariaLabel="Position Y"
+                                    ariaLabel={t("inspector.positionY")}
                                     className="min-w-0"
                                     value={Math.round(layout.y * 10) / 10}
                                     onChange={v =>
@@ -114,7 +115,7 @@ export function CompositionSection() {
                         <div className="space-y-1">
                             <Slider
                                 layout="stacked"
-                                label="Scale"
+                                label={t("inspector.scale")}
                                 value={layout.scale}
                                 onChange={v =>
                                     updateLayer(layer.id, {
