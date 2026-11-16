@@ -1,9 +1,12 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { AppLayout } from './components/layout/AppLayout';
+import { setDocumentLanguage } from './i18n';
 import { initPersistence } from './store/persistence';
 import { $persistenceEnabled } from './store/uiStore';
 import './styles/global.css';
+
+setDocumentLanguage();
 
 const agentMode = new URLSearchParams(location.search).has('agent');
 if (agentMode) $persistenceEnabled.set(false);
