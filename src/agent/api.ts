@@ -14,6 +14,7 @@ import {
   type BackgroundSpec, type GlassPatch, type Issue, type LayerPatch, type LayerSpec,
 } from './recipe';
 import type { BackgroundConfig, Layer, LayerEffects, LiquidGlassConfig } from '../types/index';
+import { t } from '../i18n';
 
 type Source = { url: string; ext: string; scale?: number };
 type Entry = { path: (string | number)[]; layer: LayerSpec };
@@ -89,7 +90,12 @@ async function prepare(entries: Entry[], taken: Set<string>) {
   let n = 0;
   for (const { layer } of entries) {
     let name = layer.name;
-    while (!name || (!layer.name && taken.has(name))) name = `${layer.type === 'group' ? 'Group' : 'Layer'} ${++n}`;
+    while (!name || (!layer.name && taken.has(name))) {
+      n += 1;
+      name = layer.type === 'group'
+        ? t('persistence.groupDefault', { index: n })
+        : t('persistence.layerDefault', { index: n });
+    }
     taken.add(name);
     names.set(layer, name);
   }
@@ -283,7 +289,7 @@ async function exportFiles(input: unknown = {}) {
 }
 
 async function load(input: unknown) {
-  const { icon, name = 'Untitled.icon' } = parse(z.strictObject({ icon: z.string().min(1), name: z.string().optional() }), input, 'load options');
+  const { icon, name = `${t('persistence.untitled')}.icon` } = parse(z.strictObject({ icon: z.string().min(1), name: z.string().optional() }), input, 'load options');
   try {
     loadDocument(await importIconDocument(new Blob([base64ToBytes(icon)]), name));
   } catch (err) {

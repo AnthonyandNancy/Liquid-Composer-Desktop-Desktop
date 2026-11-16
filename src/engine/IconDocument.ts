@@ -19,6 +19,7 @@ import {
 } from "../store/iconStore";
 import { createBackgroundCanvas } from "./ImageProcessor";
 import { DEFAULT_EFFECTS } from "./IconRenderer";
+import { t } from "../i18n";
 
 type Json = Record<string, unknown>;
 type Point = [number, number];
@@ -626,6 +627,7 @@ export async function exportIconDocument(
             CANVAS_POINTS,
         );
         const blob = await canvasPng(canvas);
+        // Icon Composer asset names stay English for package compatibility.
         const file = "Radial Background.png";
         files[`${folder}/Assets/${file}`] = new Uint8Array(
             await blob.arrayBuffer(),
@@ -756,7 +758,9 @@ export async function importIconDocument(
 
         if (!unwrap) {
             const group = createGroup(
-                typeof g.name === "string" ? g.name : `Group ${gi + 1}`,
+                typeof g.name === "string"
+                    ? g.name
+                    : t("persistence.groupDefault", { index: gi + 1 }),
             );
             group.order = order;
             group.visible = g.hidden !== true;
@@ -775,7 +779,10 @@ export async function importIconDocument(
             const layer = createLayer(
                 typeof l.name === "string"
                     ? l.name
-                    : (imageName ?? `Layer ${layers.length + 1}`),
+                    : (imageName ??
+                      t("persistence.layerDefault", {
+                          index: layers.length + 1,
+                      })),
                 parentId,
             );
             const data = imageName

@@ -1,4 +1,5 @@
 import { atom, batch, computed } from "nanostores";
+import { t } from "../i18n";
 import {
     $selectedLayerId,
     $iconPlatform,
@@ -127,7 +128,7 @@ export function defaultBackground(): BackgroundConfig {
     };
 }
 
-export const $iconName = atom<string>("Untitled");
+export const $iconName = atom<string>(t("persistence.untitled"));
 export const $iconModified = atom<boolean>(false);
 export const $layers = atom<Layer[]>([]);
 export const $background = atom<BackgroundConfig>(defaultBackground());
@@ -153,7 +154,7 @@ export function addLayer(
         siblings.length > 0 ? Math.max(...siblings.map(l => l.order)) : -1;
 
     const layer = createLayer(
-        sourceFile?.replace(/\.[^.]+$/, "") || `Layer ${layers.length + 1}`,
+        sourceFile?.replace(/\.[^.]+$/, "") || t("persistence.layerDefault", { index: layers.length + 1 }),
         parentId,
     );
     layer.order = maxOrder + 1;
@@ -180,7 +181,7 @@ export function addGroup() {
             ? Math.max(...rootSiblings.map(l => l.order))
             : -1;
     const group = createGroup(
-        `Group ${layers.filter(l => l.type === "group").length + 1}`,
+        t("persistence.groupDefault", { index: layers.filter(l => l.type === "group").length + 1 }),
     );
     group.order = maxOrder + 1;
     batch(() => {
@@ -455,7 +456,7 @@ export async function duplicateLayer(id: string) {
         return null;
     }
     const [copy] = copies;
-    copy.name = `${live.name} copy`;
+    copy.name = t("persistence.copySuffix", { name: live.name });
     copy.parentId = live.parentId;
     copy.order = live.order + 1;
     batch(() => {
@@ -559,7 +560,7 @@ export async function pasteLayers() {
 }
 
 export function setIconName(name: string) {
-    $iconName.set(name.trim() || "Untitled");
+    $iconName.set(name.trim() || t("persistence.untitled"));
     $iconModified.set(true);
 }
 
@@ -570,7 +571,7 @@ export function updateBackground(bg: Partial<BackgroundConfig>) {
 
 export function resetDocument() {
     batch(() => {
-        $iconName.set("Untitled");
+        $iconName.set(t("persistence.untitled"));
         $iconModified.set(false);
         $layers.set([]);
         $background.set(defaultBackground());
@@ -586,7 +587,7 @@ export function loadDocument(
         .filter(l => l.blobUrl)
         .forEach(l => URL.revokeObjectURL(l.blobUrl!));
     batch(() => {
-        $iconName.set(doc.name.trim() || "Untitled");
+        $iconName.set(doc.name.trim() || t("persistence.untitled"));
         $layers.set(doc.layers);
         $background.set(doc.background);
         $iconModified.set(true);
