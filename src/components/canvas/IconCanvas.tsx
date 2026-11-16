@@ -45,6 +45,7 @@ import { BottomBar } from "../layout/BottomBar";
 import { GridFour, CircleHalf } from "@phosphor-icons/react";
 import type { Layer } from "../../types/index";
 import { layersForPlatform, platformProfile } from "../../engine/platforms";
+import { t } from "../../i18n";
 
 const ICON_BASE_SIZE = 750; // px at 100% zoom
 
@@ -650,15 +651,16 @@ export function IconCanvas() {
                         background: "rgba(255,69,58,0.18)",
                         border: "0.5px solid rgba(255,69,58,0.45)",
                     }}>
-                    WebGL2 unavailable: {webgl2Error || "unknown error"}. Liquid
-                    Glass renders without refraction.
+                    {t("canvas.webglUnavailable", {
+                        detail: webgl2Error || t("canvas.unknownError"),
+                    })}
                 </div>
             )}
 
             {over && (
                 <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none bg-[#0a84ff]/20 border-4 border-[#0a84ff] border-dashed">
                     <div className="text-white font-medium text-lg">
-                        Drop image to add layer
+                        {t("canvas.dropToAddLayer")}
                     </div>
                 </div>
             )}
@@ -845,14 +847,14 @@ export function IconCanvas() {
                 <div
                     className="appearance-segments"
                     role="group"
-                    aria-label="Icon grid">
+                    aria-label={t("canvas.gridGroup")}>
                     <button
                         type="button"
                         aria-pressed={showGrid}
                         onClick={() => $showGrid.set(!showGrid)}
-                        title="Toggle icon grid">
+                        title={t("canvas.toggleGrid")}>
                         <GridFour size={12} />
-                        Grid
+                        {t("canvas.grid")}
                     </button>
                     {showGrid && (
                         <>
@@ -869,10 +871,16 @@ export function IconCanvas() {
                                             : "light",
                                     )
                                 }
-                                title="Grid style"
-                                aria-label={`Grid style: ${gridStyle}`}>
+                                title={t("canvas.gridStyle")}
+                                aria-label={t("canvas.gridStyleValue", {
+                                    style: t(
+                                        gridStyle === "light"
+                                            ? "common.light"
+                                            : "common.dark",
+                                    ),
+                                })}>
                                 <CircleHalf size={12} />
-                                {gridStyle === "light" ? "Light" : "Dark"}
+                                {t(gridStyle === "light" ? "common.light" : "common.dark")}
                             </button>
                         </>
                     )}
