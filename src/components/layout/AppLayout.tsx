@@ -4,11 +4,12 @@ import { IconCanvas } from '../canvas/IconCanvas';
 import { InspectorPanel } from '../inspector/InspectorPanel';
 import { useFileDrop } from '../useFileDrop';
 import { $mobilePane, setMobilePane, type MobilePane } from '../../store/uiStore';
+import { t, type MessageKey } from '../../i18n';
 
-const PANES: { value: MobilePane; label: string; icon: Icon }[] = [
-  { value: 'canvas', label: 'Canvas', icon: Square },
-  { value: 'layers', label: 'Layers', icon: Stack },
-  { value: 'inspector', label: 'Inspector', icon: SlidersHorizontal },
+const PANES: { value: MobilePane; labelKey: MessageKey; icon: Icon }[] = [
+  { value: 'canvas', labelKey: 'panels.canvas', icon: Square },
+  { value: 'layers', labelKey: 'panels.layers', icon: Stack },
+  { value: 'inspector', labelKey: 'panels.inspector', icon: SlidersHorizontal },
 ];
 
 export function AppLayout() {
@@ -25,12 +26,12 @@ export function AppLayout() {
         <IconCanvas />
         <InspectorPanel />
       </main>
-      <nav className="editor-tabbar" aria-label="Panels">
+      <nav className="editor-tabbar" aria-label={t('panels.ariaLabel')}>
         <span className="editor-tabbar-indicator" data-direction={slide.direction} style={{ left: `${(paneIndex * 100) / PANES.length}%`, right: `${((PANES.length - 1 - paneIndex) * 100) / PANES.length}%` }} aria-hidden="true" />
-        {PANES.map(({ value, label, icon: PaneIcon }) => (
+        {PANES.map(({ value, labelKey, icon: PaneIcon }) => (
           <button key={value} type="button" aria-pressed={pane === value} onClick={() => setMobilePane(value)}>
             <PaneIcon size={22} weight={pane === value ? 'fill' : 'regular'} aria-hidden="true" />
-            {label}
+            {t(labelKey)}
           </button>
         ))}
       </nav>

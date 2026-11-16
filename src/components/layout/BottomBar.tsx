@@ -7,6 +7,7 @@ import {
     setAppearanceMode,
 } from "../../store/uiStore";
 import type { AppearanceMode } from "../../types/index";
+import { t, type MessageKey } from "../../i18n";
 
 function GradientSlider({
     value,
@@ -56,7 +57,7 @@ function GradientSlider({
                 <input
                     id={`tint-${label.toLowerCase()}`}
                     type="range"
-                    aria-label={`Tint ${label}`}
+                    aria-label={t('appearance.tintAria', { label })}
                     min={min}
                     max={max}
                     value={value}
@@ -73,11 +74,11 @@ function GradientSlider({
     );
 }
 
-const MODES: { value: AppearanceMode; label: string }[] = [
-    { value: "default", label: "Default" },
-    { value: "dark", label: "Dark" },
-    { value: "clear", label: "Clear" },
-    { value: "tintedLight", label: "Tinted" },
+const MODES: { value: AppearanceMode; labelKey: MessageKey }[] = [
+    { value: "default", labelKey: "appearance.default" },
+    { value: "dark", labelKey: "appearance.dark" },
+    { value: "clear", labelKey: "appearance.clear" },
+    { value: "tintedLight", labelKey: "appearance.tinted" },
 ];
 
 export function BottomBar() {
@@ -109,7 +110,7 @@ export function BottomBar() {
             <div
                 className="appearance-segments"
                 role="group"
-                aria-label="Icon appearance">
+                aria-label={t('appearance.groupAria')}>
                 {MODES.map(m => {
                     const isFamily =
                         m.value === "clear" || m.value === "tintedLight";
@@ -134,7 +135,7 @@ export function BottomBar() {
                                     );
                                 else if (!active) setAppearanceMode(m.value);
                             }}>
-                            {m.label}
+                            {t(m.labelKey)}
                         </button>
                     );
                 })}
@@ -155,7 +156,7 @@ export function BottomBar() {
                                         : "tintedLight",
                                 )
                             }>
-                            Light
+                            {t('appearance.light')}
                         </button>
                         <button
                             type="button"
@@ -171,13 +172,13 @@ export function BottomBar() {
                                         : "tintedDark",
                                 )
                             }>
-                            Dark
+                            {t('appearance.dark')}
                         </button>
                     </>
                 )}
             </div>
             {tintedFamily && (
-                <div className="tint-controls" aria-label="Tint color sliders">
+                <div className="tint-controls" aria-label={t('appearance.tintSliders')}>
                     <span
                         className="tint-swatch"
                         style={{
@@ -185,7 +186,7 @@ export function BottomBar() {
                         }}
                     />
                     <GradientSlider
-                        label="Hue"
+                        label={t('appearance.hue')}
                         value={hue}
                         min={0}
                         max={360}
@@ -195,7 +196,7 @@ export function BottomBar() {
                         thumbColor={`hsl(${hue},100%,50%)`}
                     />
                     <GradientSlider
-                        label="Tint"
+                        label={t('appearance.tint')}
                         value={saturation}
                         min={0}
                         max={100}
@@ -205,7 +206,7 @@ export function BottomBar() {
                         thumbColor={thumbColor}
                     />
                     <GradientSlider
-                        label="Brightness"
+                        label={t('appearance.brightness')}
                         value={lightness}
                         min={0}
                         max={100}
