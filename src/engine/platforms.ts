@@ -1,4 +1,5 @@
 import type { IconPlatform, Layer, LayerLayout } from '../types/index';
+import type { MessageKey } from '../i18n';
 
 export interface PlatformProfile {
   id: IconPlatform;
@@ -14,6 +15,12 @@ export const PLATFORM_PROFILES: PlatformProfile[] = [
   { id: 'ios', label: 'iOS + macOS', shortLabel: 'iOS + Mac', artboard: '1024 × 1024', previewClass: 'ios' },
   { id: 'watchos', label: 'Apple Watch', shortLabel: 'Watch', artboard: '1024 × 1024', previewClass: 'watchos' },
 ];
+
+export const platformLabelKey = (id: IconPlatform): MessageKey =>
+  id === 'watchos' ? 'platform.appleWatch' : 'platform.iosMacos';
+
+export const platformShortLabelKey = (id: IconPlatform): MessageKey =>
+  id === 'watchos' ? 'platform.watch' : 'platform.iosMac';
 
 export const platformProfile = (platform: IconPlatform) =>
   PLATFORM_PROFILES.find((profile) => profile.id === platform) ?? PLATFORM_PROFILES[0];

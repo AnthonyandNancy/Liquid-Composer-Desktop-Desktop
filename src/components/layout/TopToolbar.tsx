@@ -32,12 +32,18 @@ import {
     setZoom,
     ZOOM_LEVELS,
     LIGHT_ANGLE_LEVELS,
-    LIGHT_ANGLE_LABELS,
+    LIGHT_ANGLE_KEYS,
     $iconPlatform,
     setIconPlatform,
 } from "../../store/uiStore";
-import { PLATFORM_PROFILES, platformProfile } from "../../engine/platforms";
+import {
+    PLATFORM_PROFILES,
+    platformLabelKey,
+    platformProfile,
+    platformShortLabelKey,
+} from "../../engine/platforms";
 import type { IconPlatform } from "../../types/index";
+import { t } from "../../i18n";
 
 function toDisplayAngle(a: number): number {
     return ((90 - a + 540) % 360) - 180;
@@ -68,9 +74,9 @@ const FORMAT_LABEL: Record<ExportOptions["format"], string> = {
 type ToolbarPopover = "background" | "light" | "zoom" | "platform" | "export";
 
 function exportLabel(opt: ExportOptions): string {
-    if (opt.clipboard) return "Copy PNG";
-    if (opt.allModes) return "All Appearances";
-    if (opt.bare) return "PNG · No Background";
+    if (opt.clipboard) return t("toolbar.copyPng");
+    if (opt.allModes) return t("toolbar.allAppearances");
+    if (opt.bare) return t("toolbar.noBackground");
     return `${FORMAT_LABEL[opt.format]}${opt.size === 4096 ? " · 4K" : opt.size === 2048 ? " · 2K" : ""}`;
 }
 
@@ -313,7 +319,7 @@ export function TopToolbar() {
                     <input
                         autoFocus
                         type="text"
-                        aria-label="Document name"
+                        aria-label={t('toolbar.documentName')}
                         value={nameInput}
                         onChange={e => setNameInput(e.target.value)}
                         onBlur={commitName}
@@ -340,8 +346,8 @@ export function TopToolbar() {
                                 setEditingName(true);
                             }
                         }}
-                        title="Click to rename"
-                        aria-label={`Rename document: ${name}`}
+                        title={t('toolbar.clickToRename')}
+                        aria-label={t('toolbar.renameDocument', { name })}
                         className="editor-document-name">
                         {name}
                     </button>
@@ -349,7 +355,7 @@ export function TopToolbar() {
                 {modified && (
                     <span
                         className="editor-document-modified"
-                        title="Unsaved changes"
+                        title={t('toolbar.unsavedChanges')}
                     />
                 )}
             </div>
@@ -359,7 +365,7 @@ export function TopToolbar() {
                     <button
                         onClick={() => togglePopover("background")}
                         className="editor-tool-button"
-                        title="Background color"
+                        title={t('toolbar.backgroundPopover')}
                         aria-haspopup="dialog"
                         aria-expanded={openPopover === "background"}
                         aria-controls="background-popover">
@@ -367,7 +373,7 @@ export function TopToolbar() {
                             className="editor-color-swatch"
                             style={toolbarPreviewStyle}
                         />
-                        <span>Background</span>
+                        <span>{t('toolbar.background')}</span>
                         <CaretDown
                             size={10}
                             weight="bold"
@@ -378,10 +384,10 @@ export function TopToolbar() {
                         <div
                             id="background-popover"
                             role="dialog"
-                            aria-label="Background color"
+                            aria-label={t('toolbar.backgroundPopover')}
                             className="editor-popover editor-background-popover">
                             <div className="editor-popover-heading">
-                                Background
+                                {t('toolbar.background')}
                             </div>
                             <BackgroundControls />
                         </div>
@@ -393,8 +399,8 @@ export function TopToolbar() {
                         <button
                             onClick={() => togglePopover("light")}
                             className="editor-tool-button"
-                            title="Light angle"
-                            aria-label={`Light angle: ${toDisplayAngle(lightAngle)} degrees`}
+                            title={t('toolbar.lightAngle')}
+                            aria-label={t('toolbar.lightAngleValue', { angle: toDisplayAngle(lightAngle) })}
                             aria-haspopup="menu"
                             aria-expanded={openPopover === "light"}
                             aria-controls="light-menu">
@@ -416,7 +422,7 @@ export function TopToolbar() {
                             <div
                                 id="light-menu"
                                 role="menu"
-                                aria-label="Light angle"
+                                aria-label={t('toolbar.lightAngle')}
                                 className="editor-popover editor-menu left-0"
                                 onKeyDown={handleMenuKeyDown}>
                                 {[...LIGHT_ANGLE_LEVELS].reverse().map(a => (
@@ -442,7 +448,7 @@ export function TopToolbar() {
                                                     : "invisible"
                                             }
                                         />
-                                        <span>{LIGHT_ANGLE_LABELS[a]}</span>
+                                        <span>{t(LIGHT_ANGLE_KEYS[a] ?? 'light.top')}</span>
                                         <span className="editor-menu-detail">
                                             {toDisplayAngle(a)}°
                                         </span>
@@ -456,8 +462,8 @@ export function TopToolbar() {
                         <button
                             onClick={() => togglePopover("zoom")}
                             className="editor-tool-button"
-                            title="Zoom"
-                            aria-label={`Zoom: ${zoom} percent`}
+                            title={t('toolbar.zoom')}
+                            aria-label={t('toolbar.zoomValue', { zoom })}
                             aria-haspopup="menu"
                             aria-expanded={openPopover === "zoom"}
                             aria-controls="zoom-menu">
@@ -477,7 +483,7 @@ export function TopToolbar() {
                             <div
                                 id="zoom-menu"
                                 role="menu"
-                                aria-label="Zoom"
+                                aria-label={t('toolbar.zoom')}
                                 className="editor-popover editor-menu right-0"
                                 onKeyDown={handleMenuKeyDown}>
                                 {ZOOM_LEVELS.map(z => (
@@ -512,18 +518,18 @@ export function TopToolbar() {
                     <button
                         onClick={() => togglePopover("platform")}
                         className="editor-tool-button"
-                        title="Platform preview and overrides"
+                        title={t('toolbar.platformPreview')}
                         aria-haspopup="menu"
                         aria-expanded={openPopover === "platform"}
                         aria-controls="platform-menu">
                         <PlatformIcon platform={platform} size={16} />
-                        <span>{activePlatform.shortLabel}</span>
+                        <span>{t(platformShortLabelKey(platform))}</span>
                         <CaretDown size={10} weight="bold" className="editor-chevron" />
                     </button>
                     {openPopover === "platform" && (
-                        <div id="platform-menu" role="menu" aria-label="Platform preview" className="editor-popover editor-menu editor-platform-menu" onKeyDown={handleMenuKeyDown}>
-                            <div className="editor-platform-heading">Platform variants</div>
-                            <p className="editor-platform-caption">Shared artwork · independent position and scale</p>
+                        <div id="platform-menu" role="menu" aria-label={t('toolbar.platformMenu')} className="editor-popover editor-menu editor-platform-menu" onKeyDown={handleMenuKeyDown}>
+                            <div className="editor-platform-heading">{t('toolbar.platformVariants')}</div>
+                            <p className="editor-platform-caption">{t('toolbar.platformCaption')}</p>
                             {PLATFORM_PROFILES.map(profile => (
                                 <button
                                     key={profile.id}
@@ -533,7 +539,7 @@ export function TopToolbar() {
                                     onClick={() => { setIconPlatform(profile.id); setOpenPopover(null); }}
                                     className="editor-menu-item">
                                     <PlatformIcon platform={profile.id} />
-                                    <span>{profile.label}</span>
+                                    <span>{t(platformLabelKey(profile.id))}</span>
                                     <span className="editor-menu-detail">{profile.artboard}</span>
                                     <Check size={13} weight="bold" className={platform === profile.id ? "" : "invisible"} />
                                 </button>
@@ -549,13 +555,13 @@ export function TopToolbar() {
                         <button
                             onClick={() => exportAs(DEFAULT_EXPORT)}
                             className="editor-export-action"
-                            title="Export PNG · 1024 × 1024">
+                            title={t('toolbar.exportPng')}>
                             <DownloadSimple size={16} aria-hidden="true" />
-                            Export
+                            {t('toolbar.export')}
                         </button>
                         <button
                             onClick={() => togglePopover("export")}
-                            aria-label="More export options"
+                            aria-label={t('toolbar.moreExportOptions')}
                             aria-haspopup="menu"
                             aria-expanded={openPopover === "export"}
                             aria-controls="export-menu"
@@ -567,7 +573,7 @@ export function TopToolbar() {
                         <div
                             id="export-menu"
                             role="menu"
-                            aria-label="Export"
+                            aria-label={t('toolbar.export')}
                             className="editor-popover editor-menu right-0"
                             onKeyDown={handleMenuKeyDown}>
                             {EXPORT_OPTIONS.map(opt => (
@@ -588,7 +594,7 @@ export function TopToolbar() {
                                     <span>{exportLabel(opt)}</span>
                                     <span className="editor-menu-detail">
                                         {opt.allModes
-                                            ? "ZIP"
+                                            ? t('toolbar.zip')
                                             : `${opt.size} px`}
                                     </span>
                                 </button>
@@ -598,16 +604,16 @@ export function TopToolbar() {
                                 tabIndex={-1}
                                 onClick={() => exportAs({ format: "png", size: 1024, platforms: true })}
                                 className="editor-menu-item editor-menu-separated">
-                                <span>Apple platform set</span>
-                                <span className="editor-menu-detail">ZIP · 4 PNGs</span>
+                                <span>{t('toolbar.applePlatformSet')}</span>
+                                <span className="editor-menu-detail">{t('toolbar.zipFourPngs')}</span>
                             </button>
                             <button
                                 role="menuitem"
                                 tabIndex={-1}
                                 onClick={exportIconFile}
                                 className="editor-menu-item editor-menu-separated">
-                                <span>Export .icon</span>
-                                <span className="editor-menu-detail">ZIP</span>
+                                <span>{t('toolbar.exportIcon')}</span>
+                                <span className="editor-menu-detail">{t('toolbar.zip')}</span>
                             </button>
                             <button
                                 role="menuitem"
@@ -617,8 +623,8 @@ export function TopToolbar() {
                                     setOpenPopover(null);
                                 }}
                                 className="editor-menu-item">
-                                <span>Open .icon…</span>
-                                <span className="editor-menu-detail">ZIP</span>
+                                <span>{t('toolbar.openIcon')}</span>
+                                <span className="editor-menu-detail">{t('toolbar.zip')}</span>
                             </button>
                         </div>
                     )}

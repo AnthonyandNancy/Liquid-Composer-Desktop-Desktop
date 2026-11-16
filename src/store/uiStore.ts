@@ -1,20 +1,21 @@
 import { atom } from 'nanostores';
 import type { AppearanceMode, IconPlatform } from '../types/index';
+import type { MessageKey } from '../i18n';
 
 export const ZOOM_LEVELS = [25, 50, 75, 100, 150, 200] as const;
 
 export const LIGHT_ANGLE_LEVELS = [90, 45, 0, 315, 270, 225, 180, 135] as const;
 export type LightAngleLevel = typeof LIGHT_ANGLE_LEVELS[number];
 
-export const LIGHT_ANGLE_LABELS: Record<number, string> = {
-   '90': 'Top',
-   '45': 'Top Right',
-    '0': 'Right',
-  '315': 'Bottom Right',
-  '270': 'Bottom',
-  '225': 'Bottom Left',
-  '180': 'Left',
-  '135': 'Top Left',
+export const LIGHT_ANGLE_KEYS: Record<number, MessageKey> = {
+   90: 'light.top',
+   45: 'light.topRight',
+    0: 'light.right',
+  315: 'light.bottomRight',
+  270: 'light.bottom',
+  225: 'light.bottomLeft',
+  180: 'light.left',
+  135: 'light.topLeft',
 };
 
 export const CANVAS_SELECTION_ID = '__canvas__';
