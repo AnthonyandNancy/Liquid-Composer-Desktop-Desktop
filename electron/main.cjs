@@ -1,5 +1,6 @@
-const { app, BrowserWindow, Menu, shell } = require('electron');
+const { app, session, BrowserWindow, Menu, shell } = require('electron');
 const path = require('node:path');
+const { attachDownloadSaver } = require('./download-saver.cjs');
 
 // WebGL2 + high-DPI friendliness
 app.commandLine.appendSwitch('ignore-gpu-blocklist');
@@ -126,6 +127,7 @@ app.whenReady().then(() => {
   ];
 
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+  attachDownloadSaver(session.defaultSession, app);
   createWindow();
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();

@@ -88,9 +88,13 @@ npm run desktop # 可在任意操作系统运行（仅用于调试）
 
 ```sh
 npm install        # 如尚未安装
+npm run test:desktop   # 下载命名、重名与并发保存策略
 npm run dist:win   # NSIS 安装包 + 便携版 .exe
+npm run smoke:desktop # 对 win-unpacked 做真实导出落盘冒烟
 # 输出到 release/
 ```
+
+桌面版通过 Electron 主进程的 `will-download` 保存桥把编辑器导出写入系统“下载”目录。保存文件名保留浏览器给出的 `icon-*.png`、`icon-*.jpg`、`icon.zip` 或 `<文档名>.icon.zip`；已有同名文件时追加 ` (2)`、` (3)`，不会覆盖。并发导出会在完成前预留各自路径。
 
 ## macOS 构建（安装包）
 

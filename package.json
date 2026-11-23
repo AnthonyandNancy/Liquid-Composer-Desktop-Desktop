@@ -20,7 +20,9 @@
         "dist:win": "npm run build:desktop && electron-builder --win",
         "dist:mac": "npm run build:desktop && electron-builder --mac",
         "dist:linux": "npm run build:desktop && electron-builder --linux",
-        "i18n:audit": "node scripts/i18n-audit.mjs"
+        "i18n:audit": "node scripts/i18n-audit.mjs",
+        "test:desktop": "node --test test/*.test.cjs",
+        "smoke:desktop": "node scripts/smoke-desktop-download.cjs"
     },
     "dependencies": {
         "@modelcontextprotocol/sdk": "^1.32.1",
