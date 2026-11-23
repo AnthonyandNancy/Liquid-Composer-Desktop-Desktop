@@ -18,7 +18,7 @@ function createWindow() {
     minWidth: 960,
     minHeight: 600,
     backgroundColor: '#1e1e1e',
-    title: 'Liquid Composer - Liquid Glass 图标设计工具',
+    title: '液态玻璃图标生成器',
     icon: path.join(__dirname, '..', 'public', 'icon-512.png'),
     autoHideMenuBar: true,
     show: false,
@@ -63,17 +63,17 @@ app.whenReady().then(() => {
   const template = [
     ...(isMac
       ? [{
-          label: 'Liquid Composer',
+          label: '液态玻璃图标生成器',
           submenu: [
-            { role: 'about', label: '关于 Liquid Composer' },
+            { role: 'about', label: '关于液态玻璃图标生成器' },
             { type: 'separator' },
             { role: 'services', label: '服务' },
             { type: 'separator' },
-            { role: 'hide', label: '隐藏 Liquid Composer' },
+            { role: 'hide', label: '隐藏液态玻璃图标生成器' },
             { role: 'hideOthers', label: '隐藏其他' },
             { role: 'unhide', label: '全部显示' },
             { type: 'separator' },
-            { role: 'quit', label: '退出 Liquid Composer' },
+            { role: 'quit', label: '退出液态玻璃图标生成器' },
           ],
         }]
       : []),

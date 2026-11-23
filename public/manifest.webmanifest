@@ -1,7 +1,7 @@
 {
   "id": "/",
-  "name": "Liquid Composer",
-  "short_name": "Liquid Composer",
+  "name": "液态玻璃图标生成器",
+  "short_name": "液态玻璃图标生成器",
   "description": "在浏览器中设计 Liquid Glass 应用图标。",
   "start_url": "/",
   "scope": "/",

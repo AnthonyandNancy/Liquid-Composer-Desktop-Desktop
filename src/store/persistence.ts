@@ -2,6 +2,7 @@ import { atom, batch, effect } from 'nanostores';
 import { $layers, $background, $iconName, bgColorsFromHueTint } from './iconStore';
 import { $appearanceMode, $zoom, setAppearanceMode, setZoom, $persistenceEnabled, $iconPlatform, setIconPlatform, $tintHue, $tintSaturation, $tintLightness } from './uiStore';
 import type { Layer, LayerEffects, BackgroundConfig, AppearanceMode, IconPlatform } from '../types/index';
+import { t } from '../i18n';
 
 const STORAGE_KEY = 'liquid-composer-state';
 const ASSET_DB_NAME = 'liquid-composer-assets';
@@ -135,7 +136,13 @@ export async function initPersistence() {
         }));
 
         batch(() => {
-          if (data.iconName) $iconName.set(data.iconName);
+          // Migrate the old English default to the current Chinese default.
+          const storedName = data.iconName?.trim();
+          $iconName.set(
+            !storedName || storedName === 'Untitled'
+              ? t('persistence.untitled')
+              : storedName,
+          );
           if (data.layers) $layers.set(layersWithBlobs as Layer[]);
           if (data.background) $background.set(data.background);
           if (data.ui) {

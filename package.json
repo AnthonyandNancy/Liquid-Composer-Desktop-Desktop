@@ -51,11 +51,11 @@
         "wait-on": "^9.5.1"
     },
     "main": "electron/main.cjs",
-    "description": "Liquid Composer: Liquid Glass app icon designer (desktop)",
-    "author": "Liquid Composer",
+    "description": "液态玻璃图标生成器：Liquid Glass 应用图标设计工具（桌面版）",
+    "author": "液态玻璃图标生成器",
     "build": {
         "appId": "app.liquidcomposer.desktop",
-        "productName": "Liquid Composer",
+        "productName": "液态玻璃图标生成器",
         "directories": {
             "output": "release"
         },
@@ -74,7 +74,8 @@
         },
         "nsis": {
             "oneClick": false,
-            "allowToChangeInstallationDirectory": true
+            "allowToChangeInstallationDirectory": true,
+            "include": "build/installer.nsh"
         },
         "mac": {
             "target": [

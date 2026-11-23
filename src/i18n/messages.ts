@@ -1,6 +1,6 @@
 export const zhCN = {
   app: {
-    title: 'Liquid Composer：浏览器中的 Liquid Glass 应用图标设计工具',
+    title: '液态玻璃图标生成器',
     description:
       '在浏览器中设计 Liquid Glass 应用图标，支持实时 WebGL 渲染、图层、外观变体、平台预览以及 PNG 或 .icon 导出。',
     shortDescription: '在浏览器中设计 Liquid Glass 应用图标。',
